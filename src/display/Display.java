@@ -90,20 +90,20 @@ public class Display {
  
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         
-        float[] vertices = { -1f, 1f, 0f, 1f,
-        		-1f, -1f, 0f, 1f,
-        		0f, 0f, 0f, 1f };
+        float[] vertices = { -1f, -1f, 0f, 1f,
+        		0f, 0f, 0f, 1f,
+        		-1f, 1f, 0f, 1f };
         
         FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
         vertexBuffer.put(vertices);
         vertexBuffer.flip();
         
         float[] colors = { 1f, 0f, 0f, 1f,
-        		0f, 0f, 1f, 1f,
-        		0f, 1f, 0f, 1f };
+        		0f, 1f, 0f, 1f,
+        		0f, 0f, 1f, 1f };
         
         FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(colors.length);
-        colorBuffer.put(vertices);
+        colorBuffer.put(colors);
         colorBuffer.flip();
         
         vaoID = GL30.glGenVertexArrays();
