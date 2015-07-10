@@ -90,17 +90,33 @@ public class Display {
  
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         
-        float[] vertices = { -1f, -1f, 0f, 1f,
-        		0f, 0f, 0f, 1f,
-        		-1f, 1f, 0f, 1f };
+        float[] vertices = { -1f, -1f, 0f,
+        		0f, 0f, 0f,
+        		-1f, 1f, 0f,
+        		
+        0f, 0f, 0f,
+        -1f, -1f, 0f,
+        1f, -1f, 0f,
+        
+        1f, -1f, 0f,
+        1f, 1f, 0f,
+        0f, 0f, 0f };
         
         FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
         vertexBuffer.put(vertices);
         vertexBuffer.flip();
         
-        float[] colors = { 1f, 0f, 0f, 1f,
-        		0f, 1f, 0f, 1f,
-        		0f, 0f, 1f, 1f };
+        float[] colors = { 1f, 0f, 0f,
+        		0f, 1f, 0f,
+        		0f, 0f, 1f,
+        		
+        0f, 1f, 0f,
+        1f, 0f, 0f,
+        1f, 0f, 0f,
+        
+        1f, 0f, 0f,
+        0f, 0f, 1f,
+        0f, 1f, 0f };
         
         FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(colors.length);
         colorBuffer.put(colors);
@@ -112,13 +128,13 @@ public class Display {
         vboPosID = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboPosID);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexBuffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(0, 4, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         
         vboColID = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboColID);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, colorBuffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(1, 4, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         
         GL30.glBindVertexArray(0);
@@ -130,8 +146,8 @@ public class Display {
         GL20.glAttachShader(pID, vsID);
         GL20.glAttachShader(pID, fsID);
         
-        GL20.glBindAttribLocation(pID, 0, "in_Position");
-        GL20.glBindAttribLocation(pID, 1, "in_Color");
+        GL20.glBindAttribLocation(pID, 0, "position");
+        GL20.glBindAttribLocation(pID, 1, "color");
         
         GL20.glLinkProgram(pID);
         GL20.glValidateProgram(pID);
@@ -145,7 +161,7 @@ public class Display {
             GL20.glEnableVertexAttribArray(0);
             GL20.glEnableVertexAttribArray(1);
             
-            GL11.glDrawArrays(GL_TRIANGLES, 0, 3);
+            GL11.glDrawArrays(GL_TRIANGLES, 0, 9);
             
             GL20.glDisableVertexAttribArray(0);
             GL20.glDisableVertexAttribArray(1);

@@ -1,11 +1,11 @@
-#version 150 core
- 
-in vec4 in_Position;
-in vec4 in_Color;
- 
+#version 150
+
+in vec3 position;
+in vec3 color;
+
 out vec4 pass_Color;
- 
-void main(void) {
-    gl_Position = in_Position;
-    pass_Color = in_Color;
+
+void main() {
+	gl_Position = vec4(position, 1.0f);
+	pass_Color = vec4(color, 1.0f);
 }
