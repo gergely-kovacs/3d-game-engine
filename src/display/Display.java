@@ -37,7 +37,7 @@ public class Display {
     
     private Matrix4f pMat, vMat, mMat;
     
-    private Vector3f mScale, mPos, mAng, camPos;
+    public static Vector3f mScale, mPos, mAng, camPos;
     
     private FloatBuffer matBuff;
     
@@ -177,7 +177,7 @@ public class Display {
         vMat = new Matrix4f();
         pMat = new Matrix4f();
         
-        pMat.perspective(3.1415926535f / 180f * 65f, (float) WIDTH / (float) HEIGHT, 0.1f, 100f);
+        pMat.perspective(3.1415926535f / 180f * 75f, (float) WIDTH / (float) HEIGHT, 0.1f, 100f);
         
         matBuff = BufferUtils.createFloatBuffer(16);
         
