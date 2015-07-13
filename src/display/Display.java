@@ -145,8 +145,8 @@ public class Display {
         GL30.glBindVertexArray(0);
         
         mPos = new Vector3f(0f, 0f, 0f);
-        mAng = new Vector3f(180f, 180f, 0f);
-        mScale = new Vector3f(1f, 1f, 1f);
+        mAng = new Vector3f(0f, 0f, 0f);
+        mScale = new Vector3f(1.0f, 1.0f, 1.0f);
         camPos = new Vector3f(0f, 0f, -1f);
         
         vboIndID = GL15.glGenBuffers();
@@ -177,7 +177,7 @@ public class Display {
         vMat = new Matrix4f();
         pMat = new Matrix4f();
         
-        pMat.perspective(80f, (float) WIDTH / (float) HEIGHT, 0.1f, 100f);
+        pMat.perspective(3.1415926535f / 180f * 65f, (float) WIDTH / (float) HEIGHT, 0.1f, 100f);
         
         matBuff = BufferUtils.createFloatBuffer(16);
         
