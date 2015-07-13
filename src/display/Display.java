@@ -118,7 +118,7 @@ public class Display {
         	-0.5f, 0.5f, 0f,	0f, 0f,		// 0
         	-0.5f, -0.5f, 0f,	0f, 1f,		// 1
         	0.5f, 0.5f, 0f,		1f, 0f,		// 2
-        	0.5f, -0.5f, 0f, 	1f, 1f };	// 3
+        	0.5f, -0.5f, 0f,	1f, 1f };	// 3
         
         FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
         vertexBuffer.put(vertices);
@@ -144,10 +144,10 @@ public class Display {
         
         GL30.glBindVertexArray(0);
         
-        mPos = new Vector3f(0, 0, 0);
-        mAng = new Vector3f(0, 0, 0);
-        mScale = new Vector3f(1, 1, 1);
-        camPos = new Vector3f(0, 0, -1);
+        mPos = new Vector3f(0f, 0f, 0f);
+        mAng = new Vector3f(180f, 180f, 0f);
+        mScale = new Vector3f(1f, 1f, 1f);
+        camPos = new Vector3f(0f, 0f, -1f);
         
         vboIndID = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboIndID);
@@ -184,14 +184,14 @@ public class Display {
         while ( glfwWindowShouldClose(window) == GL_FALSE ) {
             vMat = new Matrix4f();
             mMat = new Matrix4f();
-             
+            
             vMat.translate(camPos.x, camPos.y, camPos.z);
              
-            mMat.scale(mScale.x, mScale.y, mScale.z);
+            mMat.rotateZ((float) (3.1415926535f / 180f * mAng.z));
+            mMat.rotateY((float) (3.1415926535f / 180f * mAng.y));
+            mMat.rotateX((float) (3.1415926535f / 180f * mAng.x));
             mMat.translate(mPos.x, mPos.y, mPos.z);
-            mMat.rotate(0f, (float) (3.1415926535f / 180f * mAng.x),
-            	(float) (3.1415926535f / 180f * mAng.y),
-            	(float) (3.1415926535f / 180f * mAng.z));
+            mMat.scale(mScale.x, mScale.y, mScale.z);
              
             GL20.glUseProgram(pID);
              
