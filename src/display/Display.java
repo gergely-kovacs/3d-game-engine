@@ -37,7 +37,7 @@ public class Display {
     
     private Matrix4f pMat, vMat, mMat;
     
-    public static Vector3f mScale, mPos, mAng, camPos;
+    public static Vector3f mScale, mPos, mAng, camPos, camAng;
     
     private FloatBuffer matBuff;
     
@@ -55,10 +55,10 @@ public class Display {
             keyCallback.release();
         }
         finally {
-        	GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        	/*GL13.glActiveTexture(GL13.GL_TEXTURE0);
         	GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
         	GL11.glDeleteTextures(texID);
-        	GL13.glActiveTexture(0);
+        	GL13.glActiveTexture(0);*/
         	
         	GL20.glUseProgram(0);
         	GL20.glDetachShader(pID, vsID);
@@ -115,18 +115,39 @@ public class Display {
     private void loop() {
     	
         float[] vertices = {
-        	-0.5f, 0.5f, 0f,	0f, 0f,		// 0
-        	-0.5f, -0.5f, 0f,	0f, 1f,		// 1
-        	0.5f, 0.5f, 0f,		1f, 0f,		// 2
-        	0.5f, -0.5f, 0f,	1f, 1f };	// 3
+        	-0.5f, 0.5f, -0.5f,		//0f, 0f,	// 0
+        	-0.5f, -0.5f, -0.5f,	//0f, 1f,	// 1
+        	0.5f, 0.5f, -0.5f,		//1f, 0f,	// 2
+        	0.5f, -0.5f, -0.5f,		//1f, 1f,	// 3
+        	-0.5f, 0.5f, 0.5f,					// 4
+        	-0.5f, -0.5f, 0.5f,					// 5
+        	0.5f, 0.5f, 0.5f,					// 6
+        	0.5f, -0.5f, 0.5f					// 7
+        };
         
         FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
         vertexBuffer.put(vertices);
         vertexBuffer.flip();
         
         byte[] indices = {
-    		0, 1, 2,
-    		1, 3, 2 };
+    		0, 1, 2,	// 1
+    		2, 1, 3,
+    		
+        	2, 3, 6,	// 2
+        	6, 3, 7,
+        	
+        	6, 7, 4,	// 3
+        	4, 7, 5,
+        	
+        	4, 5, 0,	// 4
+        	0, 5, 1,
+        	
+        	1, 5, 7,	// 5
+        	7, 1, 3,
+        	
+        	4, 0, 6,	// 6
+        	6, 0, 2
+        };
         
         ByteBuffer indexBuffer = BufferUtils.createByteBuffer(indices.length);
         indexBuffer.put(indices);
@@ -138,8 +159,8 @@ public class Display {
         vboVertID = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboVertID);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexBuffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 20, 0);
-        GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 20, 12);
+        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 12, 0);
+        //GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 20, 12);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         
         GL30.glBindVertexArray(0);
@@ -147,7 +168,9 @@ public class Display {
         mPos = new Vector3f(0f, 0f, 0f);
         mAng = new Vector3f(0f, 0f, 0f);
         mScale = new Vector3f(1.0f, 1.0f, 1.0f);
+        
         camPos = new Vector3f(0f, 0f, -1f);
+        camAng = new Vector3f(0f, 0f, 0f);
         
         vboIndID = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboIndID);
@@ -162,7 +185,7 @@ public class Display {
         GL20.glAttachShader(pID, fsID);
         
         GL20.glBindAttribLocation(pID, 0, "position");
-        GL20.glBindAttribLocation(pID, 1, "texture");
+        //GL20.glBindAttribLocation(pID, 1, "texture");
         
         GL20.glLinkProgram(pID);
         GL20.glValidateProgram(pID);
@@ -171,7 +194,7 @@ public class Display {
         vMatLoc = GL20.glGetUniformLocation(pID, "view");
         pMatLoc = GL20.glGetUniformLocation(pID, "projection");
         
-        texID = loadTexture("res/textures/Texture1.png", GL13.GL_TEXTURE0);
+        //texID = loadTexture("res/textures/Texture1.png", GL13.GL_TEXTURE0);
         
         mMat = new Matrix4f();
         vMat = new Matrix4f();
@@ -185,8 +208,11 @@ public class Display {
             vMat = new Matrix4f();
             mMat = new Matrix4f();
             
+            vMat.rotateZ((float) (3.1415926535f / 180f * camAng.z));
+            vMat.rotateY((float) (3.1415926535f / 180f * camAng.y));
+            vMat.rotateX((float) (3.1415926535f / 180f * camAng.x));
             vMat.translate(camPos.x, camPos.y, camPos.z);
-             
+            
             mMat.rotateZ((float) (3.1415926535f / 180f * mAng.z));
             mMat.rotateY((float) (3.1415926535f / 180f * mAng.y));
             mMat.rotateX((float) (3.1415926535f / 180f * mAng.x));
@@ -208,8 +234,8 @@ public class Display {
             
             GL20.glUseProgram(pID);
             
-            GL13.glActiveTexture(GL13.GL_TEXTURE0);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, texID);
+            /*GL13.glActiveTexture(GL13.GL_TEXTURE0);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, texID);*/
             
             GL30.glBindVertexArray(vaoID);
             GL20.glEnableVertexAttribArray(0);
@@ -225,8 +251,8 @@ public class Display {
             GL20.glDisableVertexAttribArray(1);
             GL30.glBindVertexArray(0);
             
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-            GL13.glActiveTexture(0);
+            /*GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+            GL13.glActiveTexture(0);*/
             
             GL20.glUseProgram(0);
             

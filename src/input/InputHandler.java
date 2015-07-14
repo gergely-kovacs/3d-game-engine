@@ -25,31 +25,29 @@ public class InputHandler extends GLFWKeyCallback {
                 	break;
                 	
                 case GLFW_KEY_UP:
-                    Display.mPos.y += posDelta;
+                    Display.camAng.x -= rotationDelta;
                     break;
                 case GLFW_KEY_DOWN:
-                    Display.mPos.y -= posDelta;
+                	Display.camAng.x += rotationDelta;
                     break;
-                    
-                case GLFW_KEY_P:
-                	Display.mScale.add(scaleAddResolution, Display.mScale);
-                    break;
-                case GLFW_KEY_M:
-                	Display.mScale.add(scaleMinusResolution, Display.mScale);
-                    break;
-                    
                 case GLFW_KEY_LEFT:
-                    Display.mAng.z += rotationDelta;
+                    Display.camAng.y += rotationDelta;
                     break;
                 case GLFW_KEY_RIGHT:
-                	Display.mAng.z -= rotationDelta;
+                	Display.camAng.y -= rotationDelta;
                     break;
                     
                 case GLFW_KEY_W:
                     Display.camPos.z += posDelta;
                     break;
                 case GLFW_KEY_S:
-                    Display.mPos.z -= posDelta;
+                    Display.camPos.z -= posDelta;
+                    break;
+                case GLFW_KEY_SPACE:
+                    Display.camPos.y -= posDelta;
+                    break;
+                case GLFW_KEY_C:
+                    Display.camPos.y += posDelta;
                     break;
                 case GLFW_KEY_A:
                     Display.camPos.x += posDelta;
