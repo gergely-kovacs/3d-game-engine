@@ -23,8 +23,8 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
 
-import utils.Matrix4f;
-import utils.Vector3f;
+import utils.math.Matrix4f;
+import utils.math.Vector3f;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
  

@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 import org.lwjgl.glfw.GLFWKeyCallback;
 
-import utils.Vector3f;
+import utils.math.Vector3f;
 import display.Display;
 
 public class InputHandler extends GLFWKeyCallback {
