@@ -3,15 +3,18 @@ package display;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
-import input.InputHandler;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWKeyCallback;
@@ -23,16 +26,19 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
 
-import utils.math.Matrix4f;
-import utils.math.Vector3f;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
+import input.InputHandler;
+import utils.Model;
+import utils.loaders.OBJLoader;
+import utils.math.Matrix4f;
+import utils.math.Vector3f;
  
 public class Display {
 	
     private long window;
     
-    private int vaoID, vboVertID, vboIndID, vsID, fsID, pID, texID,
+    private int vaoID, vboVertID, vboNormID, vboIndID, vsID, fsID, pID, texID,
     	pMatLoc, vMatLoc, mMatLoc;
     
     private Matrix4f pMat, vMat, mMat;
@@ -114,7 +120,7 @@ public class Display {
  
     private void loop() {
     	
-        float[] vertices = {
+        /*float[] vertices = {
         	-0.5f, 0.5f, -0.5f,		//0f, 0f,	// 0
         	-0.5f, -0.5f, -0.5f,	//0f, 1f,	// 1
         	0.5f, 0.5f, -0.5f,		//1f, 0f,	// 2
@@ -151,26 +157,54 @@ public class Display {
         
         ByteBuffer indexBuffer = BufferUtils.createByteBuffer(indices.length);
         indexBuffer.put(indices);
-        indexBuffer.flip();
-        
+        indexBuffer.flip();*/
+    	
+    	Model m = new Model();
+    	m = OBJLoader.loadModel(new File("res/models/bunny2.obj"));
+    	
+    	FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(m.vertices.size() * 3);
+    	for (int i = 0; i < m.vertices.size(); i ++) {
+    		vertexBuffer.put(m.vertices.get(i).x);
+    		vertexBuffer.put(m.vertices.get(i).y);
+    		vertexBuffer.put(m.vertices.get(i).z);
+    	} vertexBuffer.flip();
+    	
+    	FloatBuffer normalBuffer = BufferUtils.createFloatBuffer(m.normals.size() * 3);
+    	for (int i = 0; i < m.normals.size(); i ++) {
+    		normalBuffer.put(m.normals.get(i).x);
+    		normalBuffer.put(m.normals.get(i).y);
+    		normalBuffer.put(m.normals.get(i).z);
+    	} normalBuffer.flip();
+    	
+    	FloatBuffer indexBuffer = BufferUtils.createFloatBuffer(m.faces.size() * 6);
+    	for (int i = 0; i < m.faces.size(); i ++) {
+    		indexBuffer.put(m.faces.get(i).vertices.x); System.out.print("f " + m.faces.get(i).vertices.x + "//");
+    		indexBuffer.put(m.faces.get(i).normals.x); System.out.print(m.faces.get(i).normals.x + " ");
+    		
+    		indexBuffer.put(m.faces.get(i).vertices.y); System.out.print(m.faces.get(i).vertices.y + "//");
+    		indexBuffer.put(m.faces.get(i).normals.y); System.out.print(m.faces.get(i).normals.y + " ");
+    		
+    		indexBuffer.put(m.faces.get(i).vertices.z); System.out.print(m.faces.get(i).vertices.z + "//");
+    		indexBuffer.put(m.faces.get(i).normals.z); System.out.println(m.faces.get(i).normals.z);
+    	} indexBuffer.flip();
+	    	
         vaoID = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vaoID);
         
         vboVertID = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboVertID);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexBuffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 12, 0);
+        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
         //GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 20, 12);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         
+        vboNormID = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboNormID);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexBuffer, GL15.GL_STATIC_DRAW);
+        GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, 0, 0);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        
         GL30.glBindVertexArray(0);
-        
-        mPos = new Vector3f(0f, 0f, 0f);
-        mAng = new Vector3f(0f, 0f, 0f);
-        mScale = new Vector3f(1.0f, 1.0f, 1.0f);
-        
-        camPos = new Vector3f(0f, 0f, -1f);
-        camAng = new Vector3f(0f, 0f, 0f);
         
         vboIndID = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboIndID);
@@ -190,17 +224,24 @@ public class Display {
         GL20.glLinkProgram(pID);
         GL20.glValidateProgram(pID);
         
+        //texID = loadTexture("res/textures/Texture1.png", GL13.GL_TEXTURE0);
+        
+        mPos = new Vector3f(0f, 0f, 0f);
+        mAng = new Vector3f(0f, 0f, 0f);
+        mScale = new Vector3f(1.0f, 1.0f, 1.0f);
+        
+        camPos = new Vector3f(0f, 0f, -1f);
+        camAng = new Vector3f(0f, 0f, 0f);
+        
         mMatLoc = GL20.glGetUniformLocation(pID, "model");
         vMatLoc = GL20.glGetUniformLocation(pID, "view");
         pMatLoc = GL20.glGetUniformLocation(pID, "projection");
-        
-        //texID = loadTexture("res/textures/Texture1.png", GL13.GL_TEXTURE0);
         
         mMat = new Matrix4f();
         vMat = new Matrix4f();
         pMat = new Matrix4f();
         
-        pMat.perspective(3.1415926535f / 180f * 75f, (float) WIDTH / (float) HEIGHT, 0.1f, 100f);
+        pMat.perspective(3.1415926535f / 180f * 60f, (float) WIDTH / (float) HEIGHT, 0.1f, 100f);
         
         matBuff = BufferUtils.createFloatBuffer(16);
         
@@ -218,7 +259,7 @@ public class Display {
             mMat.rotateX((float) (3.1415926535f / 180f * mAng.x));
             mMat.translate(mPos.x, mPos.y, mPos.z);
             mMat.scale(mScale.x, mScale.y, mScale.z);
-             
+            
             GL20.glUseProgram(pID);
              
             pMat.get(0, matBuff);
@@ -243,7 +284,7 @@ public class Display {
             
             GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboIndID);
             
-            GL11.glDrawElements(GL_TRIANGLES, indices.length, GL11.GL_UNSIGNED_BYTE, 0);
+            GL11.glDrawElements(GL_TRIANGLES, m.faces.size(), GL_FLOAT, 0);
             
             GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
             

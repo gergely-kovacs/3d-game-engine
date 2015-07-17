@@ -10,7 +10,7 @@ in vec3 position;
 //out vec2 pass_Texture;
 
 void main() {
-	gl_Position = vec4(position, 1.0f);
+	gl_Position = vec4(position, 1.0);
 	gl_Position = projection * view * model * gl_Position;
 	
 	//pass_Texture = texture;

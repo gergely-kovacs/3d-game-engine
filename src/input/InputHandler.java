@@ -31,10 +31,10 @@ public class InputHandler extends GLFWKeyCallback {
                 	Display.camAng.x += rotationDelta;
                     break;
                 case GLFW_KEY_LEFT:
-                    Display.camAng.y += rotationDelta;
+                    Display.camAng.y -= rotationDelta;
                     break;
                 case GLFW_KEY_RIGHT:
-                	Display.camAng.y -= rotationDelta;
+                	Display.camAng.y += rotationDelta;
                     break;
                     
                 case GLFW_KEY_W:
