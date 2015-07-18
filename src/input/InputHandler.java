@@ -10,9 +10,9 @@ import display.Display;
 
 public class InputHandler extends GLFWKeyCallback {
 
-	float rotationDelta = 15f;
+	float rotationDelta = 5f;
     float scaleDelta = 0.1f;
-    float posDelta = 0.1f;
+    float posDelta = 0.05f;
     Vector3f scaleAddResolution = new Vector3f(scaleDelta, scaleDelta, scaleDelta);
     Vector3f scaleMinusResolution = new Vector3f(-scaleDelta, -scaleDelta, -scaleDelta);
 	
