@@ -5,16 +5,14 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWKeyCallback;
@@ -29,7 +27,8 @@ import org.lwjgl.opengl.GLContext;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import input.InputHandler;
-import utils.Model;
+import objects.Light;
+import objects.Model;
 import utils.loaders.OBJLoader;
 import utils.math.Matrix4f;
 import utils.math.Vector3f;
@@ -39,7 +38,7 @@ public class Display {
     private long window;
     
     private int vaoID, vboVertID, vboNormID, vboIndID, vsID, fsID, pID, texID,
-    	pMatLoc, vMatLoc, mMatLoc, indexCount = 0, vertexCount = 0;
+    	pMatLoc, vMatLoc, mMatLoc, lPosLoc, lColLoc;
     
     private Matrix4f pMat, vMat, mMat;
     
@@ -50,7 +49,7 @@ public class Display {
     private GLFWKeyCallback   keyCallback;
     
     private final int WIDTH = 800, HEIGHT = 600;
-    private final String TITLE = "Szakdolgozat";
+    private final String TITLE = "Nyuszi";
  
     public void run() {
         try {
@@ -77,10 +76,11 @@ public class Display {
         	GL30.glBindVertexArray(vaoID);
         	
         	GL20.glDisableVertexAttribArray(0);
-        	//GL20.glDisableVertexAttribArray(1);
+        	GL20.glDisableVertexAttribArray(1);
         	
         	GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         	GL15.glDeleteBuffers(vboVertID);
+        	GL15.glDeleteBuffers(vboNormID);
         	
         	GL30.glBindVertexArray(0);
         	GL30.glDeleteVertexArrays(vaoID);
@@ -116,85 +116,38 @@ public class Display {
         glfwSwapInterval(1);
         
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        
+        glEnable(GL_DEPTH_TEST);
+        
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
  
     private void loop() {
     	
-        /*float[] vertices = {
-        	-0.5f, 0.5f, -0.5f,		//0f, 0f,	// 0
-        	-0.5f, -0.5f, -0.5f,	//0f, 1f,	// 1
-        	0.5f, 0.5f, -0.5f,		//1f, 0f,	// 2
-        	0.5f, -0.5f, -0.5f,		//1f, 1f,	// 3
-        	-0.5f, 0.5f, 0.5f,					// 4
-        	-0.5f, -0.5f, 0.5f,					// 5
-        	0.5f, 0.5f, 0.5f,					// 6
-        	0.5f, -0.5f, 0.5f					// 7
-        };
-        
-        FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
-        vertexBuffer.put(vertices);
-        vertexBuffer.flip();
-        
-        byte[] indices = {
-    		0, 1, 2,	// 1
-    		2, 1, 3,
-    		
-        	2, 3, 6,	// 2
-        	6, 3, 7,
-        	
-        	6, 7, 4,	// 3
-        	4, 7, 5,
-        	
-        	4, 5, 0,	// 4
-        	0, 5, 1,
-        	
-        	1, 5, 7,	// 5
-        	7, 1, 3,
-        	
-        	4, 0, 6,	// 6
-        	6, 0, 2
-        };
-        
-        ByteBuffer indexBuffer = BufferUtils.createByteBuffer(indices.length);
-        indexBuffer.put(indices);
-        indexBuffer.flip();*/
-    	
     	Model m = new Model();
     	m = OBJLoader.loadModel(new File("res/models/bunny2.obj"));
+    	
     	FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(m.vertices.size() * 3);
-    	IntBuffer indexBuffer = BufferUtils.createIntBuffer(m.faces.size() * 3);
-    	try {
-    		BufferedWriter bw = new BufferedWriter(new FileWriter(new File("res/models/output.obj")));
-    		
-	    	for (int i = 0; i < m.vertices.size(); i ++) {
-	    		vertexBuffer.put(m.vertices.get(i).x); bw.write("v " + m.vertices.get(i).x + " ");
-	    		vertexBuffer.put(m.vertices.get(i).y); bw.write(m.vertices.get(i).y + " ");
-	    		vertexBuffer.put(m.vertices.get(i).z); bw.write(m.vertices.get(i).z + "\n");
-	    		vertexCount =+ 1;
-	    	} vertexBuffer.flip();
-	    	
-	    	/*FloatBuffer normalBuffer = BufferUtils.createFloatBuffer(m.normals.size() * 3);
-	    	for (int i = 0; i < m.normals.size(); i ++) {
-	    		normalBuffer.put(m.normals.get(i).x);
-	    		normalBuffer.put(m.normals.get(i).y);
-	    		normalBuffer.put(m.normals.get(i).z);
-	    	} normalBuffer.flip();*/
-	    	
-	    	for (int i = 0; i < m.faces.size(); i ++) {
-	    		indexBuffer.put((int) m.faces.get(i).vertexIndices.x); bw.write("f " + (int) m.faces.get(i).vertexIndices.x + " ");
-	    		//indexBuffer.put(m.faces.get(i).normalIndices.x);
-	    		
-	    		indexBuffer.put((int) m.faces.get(i).vertexIndices.y); bw.write((int) m.faces.get(i).vertexIndices.y + " ");
-	    		//indexBuffer.put(m.faces.get(i).normalIndices.y);
-	    		
-	    		indexBuffer.put((int) m.faces.get(i).vertexIndices.z); bw.write((int) m.faces.get(i).vertexIndices.z + "\n");
-	    		//indexBuffer.put(m.faces.get(i).normalIndices.z);
-	    		
-	    		indexCount += 3;
-	    	} indexBuffer.flip();
-	    	bw.close();
-    	} catch (Exception x) { x.printStackTrace(); }
-	    	
+    	for (int i = 0; i < m.vertices.size(); i ++) {
+    		vertexBuffer.put(m.vertices.get(i).x);
+    		vertexBuffer.put(m.vertices.get(i).y);
+    		vertexBuffer.put(m.vertices.get(i).z);
+    	} vertexBuffer.flip();
+    	
+    	FloatBuffer normalBuffer = BufferUtils.createFloatBuffer(m.normals.size() * 3);
+    	for (int i = 0; i < m.normals.size(); i ++) {
+    		normalBuffer.put(m.normals.get(i).x);
+    		normalBuffer.put(m.normals.get(i).y);
+    		normalBuffer.put(m.normals.get(i).z);
+    	} normalBuffer.flip();
+    	
+    	ShortBuffer indexBuffer = BufferUtils.createShortBuffer(m.faces.size() * 3);
+    	for (int i = 0; i < m.faces.size(); i ++) {
+    		indexBuffer.put((short) (m.faces.get(i).vertexIndices.x - 1));
+    		indexBuffer.put((short) (m.faces.get(i).vertexIndices.y - 1));
+    		indexBuffer.put((short) (m.faces.get(i).vertexIndices.z - 1));
+    	} indexBuffer.flip();
+    	
         vaoID = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vaoID);
         
@@ -205,18 +158,18 @@ public class Display {
         //GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 20, 12);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         
-        /*vboNormID = GL15.glGenBuffers();
+        vboNormID = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboNormID);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexBuffer, GL15.GL_STATIC_DRAW);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, normalBuffer, GL15.GL_STATIC_DRAW);
         GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, 0, 0);
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);*/
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        
+        GL30.glBindVertexArray(0);
         
         vboIndID = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboIndID);
         GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indexBuffer, GL15.GL_STATIC_DRAW);
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
-        
-        GL30.glBindVertexArray(0);
         
         vsID = loadShader("res/shaders/vertexShader.glsl", GL20.GL_VERTEX_SHADER);
         fsID = loadShader("res/shaders/fragmentShader.glsl", GL20.GL_FRAGMENT_SHADER);
@@ -225,7 +178,8 @@ public class Display {
         GL20.glAttachShader(pID, vsID);
         GL20.glAttachShader(pID, fsID);
         
-        GL20.glBindAttribLocation(pID, 0, "position");
+        GL20.glBindAttribLocation(pID, 0, "vertexPosition");
+        GL20.glBindAttribLocation(pID, 1, "vertexNormal");
         //GL20.glBindAttribLocation(pID, 1, "texture");
         
         GL20.glLinkProgram(pID);
@@ -248,13 +202,17 @@ public class Display {
         vMat = new Matrix4f();
         pMat = new Matrix4f();
         
-        pMat.perspective(3.1415926535f / 180f * 60f, (float) WIDTH / (float) HEIGHT, 0.1f, 100f);
+        pMat.perspective(3.1415926535f / 180f * 60f, (float) WIDTH / (float) HEIGHT, 0.015f, 100f);
         
         matBuff = BufferUtils.createFloatBuffer(16);
         
+        lPosLoc = GL20.glGetUniformLocation(pID, "lightPosition");
+        lColLoc = GL20.glGetUniformLocation(pID, "lightColour");
+        
+        Light l = new Light(new Vector3f(0f, 0f, 1f), new Vector3f(0.5f, 0.5f, 0.5f));
+        
         while ( glfwWindowShouldClose(window) == GL_FALSE ) {
             vMat = new Matrix4f();
-            mMat = new Matrix4f();
             
             vMat.rotateZ((float) (3.1415926535f / 180f * camAng.z));
             vMat.rotateY((float) (3.1415926535f / 180f * camAng.y));
@@ -269,7 +227,10 @@ public class Display {
             GL20.glUniformMatrix4fv(vMatLoc, false, matBuff);
             mMat.get(0, matBuff);
             GL20.glUniformMatrix4fv(mMatLoc, false, matBuff);
-             
+            
+            GL20.glUniform3f(lPosLoc, l.getPosition().x, l.getPosition().y, l.getPosition().z);
+            GL20.glUniform3f(lColLoc, l.getColour().x, l.getColour().y, l.getColour().z);
+            
             GL20.glUseProgram(0);
         	
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -281,33 +242,20 @@ public class Display {
             
             GL30.glBindVertexArray(vaoID);
             GL20.glEnableVertexAttribArray(0);
-            //GL20.glEnableVertexAttribArray(1);
+            GL20.glEnableVertexAttribArray(1);
             
             GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboIndID);
             
-            GL11.glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+            GL11.glDrawElements(GL_TRIANGLES, m.faces.size() * 3, GL_UNSIGNED_SHORT, 0);
             
             GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
             
             GL20.glDisableVertexAttribArray(0);
-            //GL20.glDisableVertexAttribArray(1);
+            GL20.glDisableVertexAttribArray(1);
             GL30.glBindVertexArray(0);
             
             /*GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
             GL13.glActiveTexture(0);*/
-            
-            /*glBegin(GL_TRIANGLES);
-            for (int i = 0; i < m.faces.size(); i++) {
-            	int index = (int) m.faces.get(i).vertexIndices.x -1;
-            	glVertex3f(m.vertices.get(index).x, m.vertices.get(index).y, m.vertices.get(index).z);
-            	
-            	index = (int) m.faces.get(i).vertexIndices.y -1;
-            	glVertex3f(m.vertices.get(index).x, m.vertices.get(index).y, m.vertices.get(index).z);
-            	
-            	index = (int) m.faces.get(i).vertexIndices.z -1;
-            	glVertex3f(m.vertices.get(index).x, m.vertices.get(index).y, m.vertices.get(index).z);
-            }
-            glEnd();*/
             
             GL20.glUseProgram(0);
             

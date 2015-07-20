@@ -1,4 +1,4 @@
-package utils;
+package objects;
 
 import utils.math.Vector3f;
 
