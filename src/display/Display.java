@@ -38,7 +38,7 @@ public class Display {
     private long window;
     
     private int vaoID, vboVertID, vboNormID, vboIndID, vsID, fsID, pID, texID,
-    	pMatLoc, vMatLoc, mMatLoc, lPosLoc, lColLoc;
+    	pMatLoc, vMatLoc, mMatLoc, lPosLoc, lColLoc, shineDamperLoc, reflectivityLoc;
     
     private Matrix4f pMat, vMat, mMat;
     
@@ -119,6 +119,9 @@ public class Display {
         
         glEnable(GL_DEPTH_TEST);
         
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
  
@@ -191,7 +194,7 @@ public class Display {
         mAng = new Vector3f(0f, 0f, 0f);
         mScale = new Vector3f(1.0f, 1.0f, 1.0f);
         
-        camPos = new Vector3f(0f, 0f, -1f);
+        camPos = new Vector3f(0f, -0.1f, -0.5f);
         camAng = new Vector3f(0f, 0f, 0f);
         
         mMatLoc = GL20.glGetUniformLocation(pID, "model");
@@ -209,7 +212,10 @@ public class Display {
         lPosLoc = GL20.glGetUniformLocation(pID, "lightPosition");
         lColLoc = GL20.glGetUniformLocation(pID, "lightColour");
         
-        Light l = new Light(new Vector3f(0f, 0f, 1f), new Vector3f(0.5f, 0.5f, 0.5f));
+        Light l = new Light(new Vector3f(0f, 1f, 1f), new Vector3f(0.8f, 0.8f, 0.8f));
+        
+        shineDamperLoc = GL20.glGetUniformLocation(pID, "shineDamper");
+        reflectivityLoc = GL20.glGetUniformLocation(pID, "reflectivity");
         
         while ( glfwWindowShouldClose(window) == GL_FALSE ) {
             vMat = new Matrix4f();
@@ -230,6 +236,9 @@ public class Display {
             
             GL20.glUniform3f(lPosLoc, l.getPosition().x, l.getPosition().y, l.getPosition().z);
             GL20.glUniform3f(lColLoc, l.getColour().x, l.getColour().y, l.getColour().z);
+            
+            GL20.glUniform1f(shineDamperLoc, m.getShineDamper());
+            GL20.glUniform1f(reflectivityLoc, m.getReflectivity());
             
             GL20.glUseProgram(0);
         	

@@ -11,7 +11,8 @@ in vec3 vertexNormal;
 //in vec2 texture;
 
 out vec3 surfaceNormal;
-out vec3 lightDirection;
+out vec3 toLight;
+out vec3 toCamera;
 //out vec2 pass_Texture;
 
 void main() {
@@ -19,8 +20,8 @@ void main() {
 	gl_Position = projection * view * transPos;
 	
 	surfaceNormal = (model * vec4(vertexNormal, 0.0)).xyz;
-	
-	lightDirection = lightPosition - transPos.xyz;
+	toLight = lightPosition - transPos.xyz;
+	toCamera = (inverse(view) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - transPos.xyz;
 	
 	//pass_Texture = texture;
 }
