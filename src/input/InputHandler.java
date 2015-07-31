@@ -5,16 +5,16 @@ import static org.lwjgl.opengl.GL11.*;
 
 import org.lwjgl.glfw.GLFWKeyCallback;
 
-import utils.math.Vector3f;
 import display.Display;
+import utils.maths.Vec3f;
 
 public class InputHandler extends GLFWKeyCallback {
 
 	float rotationDelta = 5f;
     float scaleDelta = 0.1f;
     float posDelta = 0.05f;
-    Vector3f scaleAddResolution = new Vector3f(scaleDelta, scaleDelta, scaleDelta);
-    Vector3f scaleMinusResolution = new Vector3f(-scaleDelta, -scaleDelta, -scaleDelta);
+    Vec3f scaleAddResolution = new Vec3f(scaleDelta, scaleDelta, scaleDelta);
+    Vec3f scaleMinusResolution = new Vec3f(-scaleDelta, -scaleDelta, -scaleDelta);
 	
 	@Override
 	public void invoke(long window, int key, int scancode, int action, int mods) {
@@ -25,35 +25,35 @@ public class InputHandler extends GLFWKeyCallback {
                 	break;
                 	
                 case GLFW_KEY_UP:
-                    Display.camAng.x -= rotationDelta;
+                	Display.camera.setPitch(Display.camera.getPitch() - rotationDelta);
                     break;
                 case GLFW_KEY_DOWN:
-                	Display.camAng.x += rotationDelta;
+                	Display.camera.setPitch(Display.camera.getPitch() + rotationDelta);
                     break;
                 case GLFW_KEY_LEFT:
-                    Display.camAng.y -= rotationDelta;
+                	Display.camera.setYaw(Display.camera.getYaw() - rotationDelta);
                     break;
                 case GLFW_KEY_RIGHT:
-                	Display.camAng.y += rotationDelta;
+                	Display.camera.setYaw(Display.camera.getYaw() + rotationDelta);
                     break;
                     
                 case GLFW_KEY_W:
-                    Display.camPos.z += posDelta;
+                    Display.camera.getPosition().z -= posDelta;
                     break;
                 case GLFW_KEY_S:
-                    Display.camPos.z -= posDelta;
+                    Display.camera.getPosition().z += posDelta;
                     break;
                 case GLFW_KEY_SPACE:
-                    Display.camPos.y -= posDelta;
+                    Display.camera.getPosition().y += posDelta;
                     break;
                 case GLFW_KEY_C:
-                    Display.camPos.y += posDelta;
+                    Display.camera.getPosition().y -= posDelta;
                     break;
                 case GLFW_KEY_A:
-                    Display.camPos.x += posDelta;
+                    Display.camera.getPosition().x -= posDelta;
                     break;
                 case GLFW_KEY_D:
-                    Display.camPos.x -= posDelta;
+                    Display.camera.getPosition().x += posDelta;
                     break;
             }
 		//}

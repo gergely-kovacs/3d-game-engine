@@ -1,28 +1,28 @@
 package objects;
 
-import utils.math.Vector3f;
+import utils.maths.Vec3f;
 
 public class Light {
-	private Vector3f position, colour;
+	private Vec3f position, colour;
 	
-	public Light(Vector3f position, Vector3f colour) {
+	public Light(Vec3f position, Vec3f colour) {
 		this.position = position;
 		this.colour = colour;
 	}
 
-	public Vector3f getPosition() {
+	public Vec3f getPosition() {
 		return position;
 	}
 
-	public void setPosition(Vector3f position) {
+	public void setPosition(Vec3f position) {
 		this.position = position;
 	}
 
-	public Vector3f getColour() {
+	public Vec3f getColour() {
 		return colour;
 	}
 
-	public void setColour(Vector3f colour) {
+	public void setColour(Vec3f colour) {
 		this.colour = colour;
 	}
 }

@@ -20,7 +20,7 @@
  THE SOFTWARE.
 
  */
-package utils.math;
+package utils.maths;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -29,16 +29,17 @@ import java.io.ObjectOutput;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+
 /**
- * Contains the definition of a Vector comprising 4 floats and associated
+ * Contains the definition of a Vector comprising 3 floats and associated
  * transformations.
- * 
+ *
  * @author Richard Greenlees
  * @author Kai Burjack
  */
-public class Vector4f implements Externalizable {
+public class Vector3f implements Externalizable {
 
-    private static final long serialVersionUID = 1L;   
+    private static final long serialVersionUID = 1L;    
 
     /**
      * The x-coordinate of the vector.
@@ -52,44 +53,11 @@ public class Vector4f implements Externalizable {
      * The z-coordinate of the vector.
      */
     public float z;
-    /**
-     * The w-coordinate of the vector.
-     */
-    public float w = 1.0f;
 
     /**
-     * Create a new {@link Vector4f} of <code>(0, 0, 0, 1)</code>.
+     * Create a new {@link Vector3f} of <tt>(0, 0, 0)</tt>.
      */
-    public Vector4f() {
-    }
-
-    /**
-     * Create a new {@link Vector4f} with the same values as <code>v</code>.
-     * 
-     * @param v
-     *            the {@link Vector4f} to copy the values from
-     */
-    public Vector4f(Vector4f v) {
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
-        this.w = v.w;
-    }
-
-    /**
-     * Create a new {@link Vector4f} with the first three components from the
-     * given <code>v</code> and the given <code>w</code>.
-     * 
-     * @param v
-     *            the {@link Vector3f}
-     * @param w
-     *            the w value
-     */
-    public Vector4f(Vector3f v, float w) {
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
-        this.w = w;
+    public Vector3f() {
     }
 
     /**
@@ -101,103 +69,68 @@ public class Vector4f implements Externalizable {
      *          the value of y
      * @param z
      *          the value of z
-     * @param w
-     *          the value of w
      */
-    public Vector4f(float x, float y, float z, float w) {
+    public Vector3f(float x, float y, float z) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.w = w;
     }
 
     /**
-     * Set this {@link Vector4f} to the values of the given <code>v</code>.
+     * Create a new {@link Vector3f} with the same values as <code>v</code>.
      * 
      * @param v
-     *            the vector whose values will be copied into this
-     * @return this
+     *            the {@link Vector3f} to copy the values from
      */
-    public Vector4f set(Vector4f v) {
+    public Vector3f(Vector3f v) {
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
-        this.w = v.w;
+    }
+
+    /**
+     * Set the x, y and z attributes to match the supplied vector.
+     * 
+     * @param v
+     *          contains the values of x, y and z to set
+     * @return this
+     */
+    public Vector3f set(Vector3f v) {
+        x = v.x;
+        y = v.y;
+        z = v.z;
         return this;
     }
 
     /**
-     * Set the first three components of this to the components of
-     * <code>v</code> and the last component to <code>w</code>.
-     * 
-     * @param v
-     *            the {@link Vector3f} to copy
-     * @param w
-     *            the w component
-     * @return this
-     */
-    public Vector4f set(Vector3f v, float w) {
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
-        this.w = w;
-        return this;
-    }
-
-    /**
-     * Set the components of this vector to the given values.
+     * Set the x, y and z attributes to the supplied float values.
      * 
      * @param x
-     *            the x-component
+     *          the value of x
      * @param y
-     *            the y-component
+     *          the value of y
      * @param z
-     *            the z-component
-     * @param w
-     *            the w component
+     *          the value of z
      * @return this
      */
-    public Vector4f set(float x, float y, float z, float w) {
+    public Vector3f set(float x, float y, float z) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.w = w;
         return this;
     }
 
     /**
-     * Subtract the supplied vector from this one.
+     * Subtract the supplied vector from this one and store the result in <code>this</code>.
      * 
      * @param v
      *          the vector to subtract
      * @return this
      */
-    public Vector4f sub(Vector4f v) {
+    public Vector3f sub(Vector3f v) {
         x -= v.x;
         y -= v.y;
         z -= v.z;
-        w -= v.w;
-        return this;
-    }
-
-    /**
-     * Subtract <tt>(x, y, z, w)</tt> from this.
-     * 
-     * @param x
-     *          the x-coordinate to subtract
-     * @param y
-     *          the y-coordinate to subtract
-     * @param z
-     *          the z-coordinate to subtract
-     * @param w
-     *          the w-coordinate to subtract
-     * @return this
-     */
-    public Vector4f sub(float x, float y, float z, float w) {
-        this.x -= x;
-        this.y -= y;
-        this.z -= z;
-        this.w -= w;
         return this;
     }
 
@@ -205,21 +138,20 @@ public class Vector4f implements Externalizable {
      * Subtract the supplied vector from this one and store the result in <code>dest</code>.
      * 
      * @param v
-     *          the vector to subtract from <code>this</code>
+     *          the vector to subtract
      * @param dest
      *          will hold the result
      * @return this
      */
-    public Vector4f sub(Vector4f v, Vector4f dest) {
+    public Vector3f sub(Vector3f v, Vector3f dest) {
         dest.x = x - v.x;
         dest.y = y - v.y;
         dest.z = z - v.z;
-        dest.w = w - v.w;
         return this;
     }
 
     /**
-     * Subtract <tt>(x, y, z, w)</tt> from this and store the result in <code>dest</code>.
+     * Decrement the components of this vector by the given values.
      * 
      * @param x
      *          the x-coordinate to subtract
@@ -227,17 +159,32 @@ public class Vector4f implements Externalizable {
      *          the y-coordinate to subtract
      * @param z
      *          the z-coordinate to subtract
-     * @param w
-     *          the w-coordinate to subtract
+     * @return this
+     */
+    public Vector3f sub(float x, float y, float z) {
+        this.x -= x;
+        this.y -= y;
+        this.z -= z;
+        return this;
+    }
+
+    /**
+     * Decrement the components of this vector by the given values and store the result in <code>dest</code>.
+     * 
+     * @param x
+     *          the x-coordinate to subtract
+     * @param y
+     *          the y-coordinate to subtract
+     * @param z
+     *          the z-coordinate to subtract
      * @param dest
      *          will hold the result
      * @return this
      */
-    public Vector4f sub(float x, float y, float z, float w, Vector4f dest) {
+    public Vector3f sub(float x, float y, float z, Vector3f dest) {
         dest.x = this.x - x;
         dest.y = this.y - y;
         dest.z = this.z - z;
-        dest.w = this.w - w;
         return this;
     }
 
@@ -248,11 +195,10 @@ public class Vector4f implements Externalizable {
      *          the vector to add
      * @return this
      */
-    public Vector4f add(Vector4f v) {
+    public Vector3f add(Vector3f v) {
         x += v.x;
         y += v.y;
         z += v.z;
-        w += v.w;
         return this;
     }
 
@@ -265,11 +211,10 @@ public class Vector4f implements Externalizable {
      *          will hold the result
      * @return this
      */
-    public Vector4f add(Vector4f v, Vector4f dest) {
+    public Vector3f add(Vector3f v, Vector3f dest) {
         dest.x = x + v.x;
         dest.y = y + v.y;
         dest.z = z + v.z;
-        dest.w = w + v.w;
         return this;
     }
 
@@ -282,15 +227,12 @@ public class Vector4f implements Externalizable {
      *          the y-coordinate to add
      * @param z
      *          the z-coordinate to add
-     * @param w
-     *          the w-coordinate to add
      * @return this
      */
-    public Vector4f add(float x, float y, float z, float w) {
+    public Vector3f add(float x, float y, float z) {
         this.x += x;
         this.y += y;
         this.z += z;
-        this.w += w;
         return this;
     }
 
@@ -303,17 +245,14 @@ public class Vector4f implements Externalizable {
      *          the y-coordinate to add
      * @param z
      *          the z-coordinate to add
-     * @param w
-     *          the w-coordinate to add
      * @param dest
      *          will hold the result
      * @return this
      */
-    public Vector4f add(float x, float y, float z, float w, Vector4f dest) {
+    public Vector3f add(float x, float y, float z, Vector3f dest) {
         dest.x = this.x + x;
         dest.y = this.y + y;
         dest.z = this.z + z;
-        dest.w = this.w + w;
         return this;
     }
 
@@ -326,11 +265,10 @@ public class Vector4f implements Externalizable {
      *          the second multiplicand
      * @return this
      */
-    public Vector4f fma(Vector4f a, Vector4f b) {
+    public Vector3f fma(Vector3f a, Vector3f b) {
         x += a.x * b.x;
         y += a.y * b.y;
         z += a.z * b.z;
-        w += a.w * b.w;
         return this;
     }
 
@@ -343,11 +281,10 @@ public class Vector4f implements Externalizable {
      *          the second multiplicand
      * @return this
      */
-    public Vector4f fma(float a, Vector4f b) {
+    public Vector3f fma(float a, Vector3f b) {
         x += a * b.x;
         y += a * b.y;
         z += a * b.z;
-        w += a * b.w;
         return this;
     }
 
@@ -363,11 +300,10 @@ public class Vector4f implements Externalizable {
      *          will hold the result
      * @return this
      */
-    public Vector4f fma(Vector4f a, Vector4f b, Vector4f dest) {
+    public Vector3f fma(Vector3f a, Vector3f b, Vector3f dest) {
         dest.x = x + a.x * b.x;
         dest.y = y + a.y * b.y;
         dest.z = z + a.z * b.z;
-        dest.w = w + a.w * b.w;
         return this;
     }
 
@@ -383,63 +319,59 @@ public class Vector4f implements Externalizable {
      *          will hold the result
      * @return this
      */
-    public Vector4f fma(float a, Vector4f b, Vector4f dest) {
+    public Vector3f fma(float a, Vector3f b, Vector3f dest) {
         dest.x = x + a * b.x;
         dest.y = y + a * b.y;
         dest.z = z + a * b.z;
-        dest.w = w + a * b.w;
         return this;
     }
 
     /**
-     * Multiply this Vector4f component-wise by another Vector4f.
+     * Multiply this Vector3f component-wise by another Vector3f.
      * 
      * @param v
-     *          the other vector
+     *          the vector to multiply by
      * @return this
      */
-    public Vector4f mul(Vector4f v) {
+    public Vector3f mul(Vector3f v) {
         x *= v.x;
         y *= v.y;
         z *= v.z;
-        w *= v.w;
         return this;
     }
 
     /**
-     * Multiply this Vector4f component-wise by another Vector4f and store the result in <code>dest</code>.
+     * Multiply this Vector3f component-wise by another Vector3f and store the result in <code>dest</code>.
      * 
      * @param v
-     *          the other vector
+     *          the vector to multiply by
      * @param dest
      *          will hold the result
      * @return this
      */
-    public Vector4f mul(Vector4f v, Vector4f dest) {
+    public Vector3f mul(Vector3f v, Vector3f dest) {
         dest.x = x * v.x;
         dest.y = y * v.y;
         dest.z = z * v.z;
-        dest.w = w * v.w;
         return this;
     }
 
     /**
-     * Divide this Vector4f component-wise by another Vector4f.
+     * Divide this Vector3f component-wise by another Vector3f.
      * 
      * @param v
      *          the vector to divide by
      * @return this
      */
-    public Vector4f div(Vector4f v) {
+    public Vector3f div(Vector3f v) {
         x /= v.x;
         y /= v.y;
         z /= v.z;
-        w /= v.w;
         return this;
     }
 
     /**
-     * Divide this Vector4f component-wise by another Vector4f and store the result in <code>dest</code>.
+     * Divide this Vector3f component-wise by another Vector3f and store the result in <code>dest</code>.
      * 
      * @param v
      *          the vector to divide by
@@ -447,147 +379,166 @@ public class Vector4f implements Externalizable {
      *          will hold the result
      * @return this
      */
-    public Vector4f div(Vector4f v, Vector4f dest) {
+    public Vector3f div(Vector3f v, Vector3f dest) {
         dest.x = x / v.x;
         dest.y = y / v.y;
         dest.z = z / v.z;
-        dest.w = w / v.w;
         return this;
     }
 
     /**
-     * Multiply this Vector4f by the given matrix mat and store the result in
-     * <code>this</code>.
+     * Multiply this Vector3f by the given matrix <code>mat</code> and store the result in <code>this</code>.
      * 
      * @param mat
-     *            the matrix to multiply the vector with
+     *          the matrix to multiply this vector by
      * @return this
      */
-    public Vector4f mul(Matrix4f mat) {
+    public Vector3f mul(Matrix4f mat) {
         return mul(mat, this);
     }
 
     /**
-     * Multiply this Vector4f by the given matrix mat and store the result in
-     * <code>dest</code>.
+     * Multiply this Vector3f by the given matrix <code>mat</code> and store the result in <code>dest</code>.
      * 
      * @param mat
-     *            the matrix to multiply the vector with
+     *          the matrix to multiply this vector by
      * @param dest
-     *            the destination vector to hold the result
+     *          will hold the result
      * @return this
      */
-    public Vector4f mul(Matrix4f mat, Vector4f dest) {
+    public Vector3f mul(Matrix4f mat, Vector3f dest) {
         if (this != dest) {
-            dest.x = mat.m00 * x + mat.m10 * y + mat.m20 * z + mat.m30 * w;
-            dest.y = mat.m01 * x + mat.m11 * y + mat.m21 * z + mat.m31 * w;
-            dest.z = mat.m02 * x + mat.m12 * y + mat.m22 * z + mat.m32 * w;
-            dest.w = mat.m03 * x + mat.m13 * y + mat.m23 * z + mat.m33 * w;
+            dest.x = mat.m00 * x + mat.m10 * y + mat.m20 * z;
+            dest.y = mat.m01 * x + mat.m11 * y + mat.m21 * z;
+            dest.z = mat.m02 * x + mat.m12 * y + mat.m22 * z;
         } else {
-            dest.set(mat.m00 * x + mat.m10 * y + mat.m20 * z + mat.m30 * w,
-                     mat.m01 * x + mat.m11 * y + mat.m21 * z + mat.m31 * w,
-                     mat.m02 * x + mat.m12 * y + mat.m22 * z + mat.m32 * w,
-                     mat.m03 * x + mat.m13 * y + mat.m23 * z + mat.m33 * w);
+            dest.set(mat.m00 * x + mat.m10 * y + mat.m20 * z,
+                     mat.m01 * x + mat.m11 * y + mat.m21 * z,
+                     mat.m02 * x + mat.m12 * y + mat.m22 * z);
         }
         return this;
     }
 
     /**
-     * Multiply all components of this {@link Vector4f} by the given scalar
+     * Multiply this Vector3f by the given matrix and store the result in <code>this</code>.
+     * 
+     * @param mat
+     *          the matrix
+     * @return this
+     */
+    public Vector3f mul(Matrix3f mat) {
+        return mul(mat, this);
+    }
+
+    /**
+     * Multiply this Vector3f by the given matrix and store the result in <code>dest</code>.
+     * 
+     * @param mat
+     *          the matrix
+     * @param dest
+     *          will hold the result
+     * @return this
+     */
+    public Vector3f mul(Matrix3f mat, Vector3f dest) {
+        if (this != dest) {
+            dest.x = mat.m00 * x + mat.m10 * y + mat.m20 * z;
+            dest.y = mat.m01 * x + mat.m11 * y + mat.m21 * z;
+            dest.z = mat.m02 * x + mat.m12 * y + mat.m22 * z;
+        } else {
+            dest.set(mat.m00 * x + mat.m10 * y + mat.m20 * z,
+                     mat.m01 * x + mat.m11 * y + mat.m21 * z,
+                     mat.m02 * x + mat.m12 * y + mat.m22 * z);
+        }
+        return this;
+    }
+
+    /**
+     * Multiply all components of this {@link Vector3f} by the given scalar
      * value.
      * 
      * @param scalar
-     *          the scalar to multiply by
+     *          the scalar to multiply this vector by
      * @return this
      */
-    public Vector4f mul(float scalar) {
+    public Vector3f mul(float scalar) {
         x *= scalar;
         y *= scalar;
         z *= scalar;
-        w *= scalar;
         return this;
     }
 
     /**
-     * Multiply all components of this {@link Vector4f} by the given scalar
+     * Multiply all components of this {@link Vector3f} by the given scalar
      * value and store the result in <code>dest</code>.
      * 
      * @param scalar
-     *          the scalar to multiply by
+     *          the scalar to multiply this vector by
      * @param dest
      *          will hold the result
      * @return this
      */
-    public Vector4f mul(float scalar, Vector4f dest) {
+    public Vector3f mul(float scalar, Vector3f dest) {
         dest.x = x * scalar;
         dest.y = y * scalar;
         dest.z = z * scalar;
-        dest.w = w * scalar;
         return this;
     }
 
     /**
-     * Multiply the components of this Vector4f by the given scalar values and store the result in <code>this</code>.
+     * Multiply the components of this Vector3f by the given scalar values and store the result in <code>this</code>.
      * 
      * @param x
-     *          the x-coordinate to multiply by
+     *          the x-coordinate to multiply this vector by
      * @param y
-     *          the y-coordinate to multiply by
+     *          the y-coordinate to multiply this vector by
      * @param z
-     *          the z-coordinate to multiply by
-     * @param w
-     *          the w-coordinate to multiply by
+     *          the z-coordinate to multiply this vector by
      * @return this
      */
-    public Vector4f mul(float x, float y, float z, float w) {
+    public Vector3f mul(float x, float y, float z) {
         this.x *= x;
         this.y *= y;
         this.z *= z;
-        this.w *= w;
         return this;
     }
 
     /**
-     * Multiply the components of this Vector4f by the given scalar values and store the result in <code>dest</code>.
+     * Multiply the components of this Vector3f by the given scalar values and store the result in <code>dest</code>.
      * 
      * @param x
-     *          the x-coordinate to multiply by
+     *          the x-coordinate to multiply this vector by
      * @param y
-     *          the y-coordinate to multiply by
+     *          the y-coordinate to multiply this vector by
      * @param z
-     *          the z-coordinate to multiply by
-     * @param w
-     *          the w-coordinate to multiply by
+     *          the z-coordinate to multiply this vector by
      * @param dest
      *          will hold the result
      * @return this
      */
-    public Vector4f mul(float x, float y, float z, float w, Vector4f dest) {
+    public Vector3f mul(float x, float y, float z, Vector3f dest) {
         dest.x = this.x * x;
         dest.y = this.y * y;
         dest.z = this.z * z;
-        dest.w = this.w * w;
         return this;
     }
 
     /**
-     * Divide all components of this {@link Vector4f} by the given scalar
+     * Divide all components of this {@link Vector3f} by the given scalar
      * value.
      * 
      * @param scalar
      *          the scalar to divide by
      * @return this
      */
-    public Vector4f div(float scalar) {
+    public Vector3f div(float scalar) {
         x /= scalar;
         y /= scalar;
         z /= scalar;
-        w /= scalar;
         return this;
     }
 
     /**
-     * Divide all components of this {@link Vector4f} by the given scalar
+     * Divide all components of this {@link Vector3f} by the given scalar
      * value and store the result in <code>dest</code>.
      * 
      * @param scalar
@@ -596,75 +547,69 @@ public class Vector4f implements Externalizable {
      *          will hold the result
      * @return this
      */
-    public Vector4f div(float scalar, Vector4f dest) {
+    public Vector3f div(float scalar, Vector3f dest) {
         dest.x = x / scalar;
         dest.y = y / scalar;
         dest.z = z / scalar;
-        dest.w = w / scalar;
         return this;
     }
 
     /**
-     * Divide the components of this Vector4f by the given scalar values and store the result in <code>this</code>.
+     * Divide the components of this Vector3f by the given scalar values and store the result in <code>this</code>.
      * 
      * @param x
-     *          the x-coordinate to divide by
+     *          the x-coordinate to divide this vector by
      * @param y
-     *          the y-coordinate to divide by
+     *          the y-coordinate to divide this vector by
      * @param z
-     *          the z-coordinate to divide by
-     * @param w
-     *          the w-coordinate to divide by
+     *          the z-coordinate to divide this vector by
      * @return this
      */
-    public Vector4f div(float x, float y, float z, float w) {
+    public Vector3f div(float x, float y, float z) {
         this.x /= x;
         this.y /= y;
         this.z /= z;
-        this.w /= w;
         return this;
     }
 
     /**
-     * Divide the components of this Vector4f by the given scalar values and store the result in <code>dest</code>.
+     * Divide the components of this Vector3f by the given scalar values and store the result in <code>dest</code>.
      * 
      * @param x
-     *          the x-coordinate to divide by
+     *          the x-coordinate to divide this vector by
      * @param y
-     *          the y-coordinate to divide by
+     *          the y-coordinate to divide this vector by
      * @param z
-     *          the z-coordinate to divide by
-     * @param w
-     *          the w-coordinate to divide by
+     *          the z-coordinate to divide this vector by
      * @param dest
      *          will hold the result
      * @return this
      */
-    public Vector4f div(float x, float y, float z, float w, Vector4f dest) {
+    public Vector3f div(float x, float y, float z, Vector3f dest) {
         dest.x = this.x / x;
         dest.y = this.y / y;
         dest.z = this.z / z;
-        dest.w = this.w / w;
         return this;
     }
 
     /**
      * Rotate this vector by the given quaternion <code>quat</code> and store the result in <code>this</code>.
      * 
-     * @see Quaternionf#transform(Vector4f)
+     * @see Quaternionf#transform(Vector3f)
      * 
      * @param quat
      *          the quaternion to rotate this vector
      * @return this
      */
-    public Vector4f rotate(Quaternionf quat) {
-        return rotate(quat, this);
+    public Vector3f rotate(Quaternionf quat) {
+        quat.transform(this, this);
+        return this;
     }
 
     /**
      * Rotate this vector by the given quaternion <code>quat</code> and store the result in <code>dest</code>.
      * 
-     * @see Quaternionf#transform(Vector4f)
+     * @see Quaternionf#transform(Vector3f)
      * 
      * @param quat
      *          the quaternion to rotate this vector
@@ -672,7 +617,7 @@ public class Vector4f implements Externalizable {
      *          will hold the result
      * @return this
      */
-    public Vector4f rotate(Quaternionf quat, Vector4f dest) {
+    public Vector3f rotate(Quaternionf quat, Vector3f dest) {
         quat.transform(this, dest);
         return this;
     }
@@ -683,7 +628,7 @@ public class Vector4f implements Externalizable {
      * @return the length squared
      */
     public float lengthSquared() {
-        return x * x + y * y + z * z + w * w;
+        return x * x + y * y + z * z;
     }
 
     /**
@@ -696,82 +641,113 @@ public class Vector4f implements Externalizable {
     }
 
     /**
-     * Normalizes this vector.
+     * Normalize this vector.
      * 
      * @return this
      */
-    public Vector4f normalize() {
+    public Vector3f normalize() {
         float d = length();
         x /= d;
         y /= d;
         z /= d;
-        w /= d;
         return this;
     }
 
     /**
-     * Normalizes this vector and store the result in <code>dest</code>.
+     * Normalize this vector and store the result in <code>dest</code>.
      * 
      * @param dest
      *          will hold the result
      * @return this
      */
-    public Vector4f normalize(Vector4f dest) {
+    public Vector3f normalize(Vector3f dest) {
         float d = length();
         dest.x = x / d;
         dest.y = y / d;
         dest.z = z / d;
-        dest.w = w / d;
         return this;
     }
 
     /**
-     * Normalize this vector by computing only the norm of <tt>(x, y, z)</tt>.
-     * 
-     * @return this
-     */
-    public Vector4f normalize3() {
-        float d = (float) Math.sqrt(x * x + y * y + z * z);
-        x /= d;
-        y /= d;
-        z /= d;
-        w /= d;
-        return this;
-    }
-
-    /**
-     * Normalize this vector by computing only the norm of <tt>(x, y, z)</tt> and store the result in <code>dest</code>.
-     * 
-     * @param dest
-     *          will hold the result
-     * @return this
-     */
-    public Vector4f normalize3(Vector4d dest) {
-        float d = (float) Math.sqrt(x * x + y * y + z * z);
-        dest.x = x / d;
-        dest.y = y / d;
-        dest.z = z / d;
-        dest.w = w / d;
-        return this;
-    }
-
-    /**
-     * Return the distance between <code>this</code> vector and <code>v</code>.
+     * Set this vector to be the cross product of itself and <code>v</code>.
      * 
      * @param v
      *          the other vector
-     * @return the euclidean distance
+     * @return this
      */
-    public float distance(Vector4f v) {
-        return (float) Math.sqrt(
-                (v.x - x) * (v.x - x)
-              + (v.y - y) * (v.y - y)
-              + (v.z - z) * (v.z - z)
-              + (v.w - w) * (v.w - w));
+    public Vector3f cross(Vector3f v) {
+        return set(y * v.z - z * v.y,
+                   z * v.x - x * v.z,
+                   x * v.y - y * v.x);
     }
 
     /**
-     * Return the distance between <code>this</code> vector and <tt>(x, y, z, w)</tt>.
+     * Set this vector to be the cross product of itself and <tt>(x, y, z)</tt>.
+     * 
+     * @param x
+     *          the x-coordinate of the other vector
+     * @param y
+     *          the y-coordinate of the other vector
+     * @param z
+     *          the z-coordinate of the other vector
+     * @return this
+     */
+    public Vector3f cross(float x, float y, float z) {
+        return set(this.y * z - this.z * y,
+                   this.z * x - this.x * z,
+                   this.x * y - this.y * x);
+    }
+
+    /**
+     * Compute the cross product of this vector and <code>v</code> and store the result in <code>dest</code>.
+     * 
+     * @param v
+     *          the other vector
+     * @param dest
+     *          will hold the result
+     * @return this
+     */
+    public Vector3f cross(Vector3f v, Vector3f dest) {
+        return dest.set(y * v.z - z * v.y,
+                        z * v.x - x * v.z,
+                        x * v.y - y * v.x);
+    }
+
+    /**
+     * Compute the cross product of this vector and <tt>(x, y, z)</tt> and store the result in <code>dest</code>.
+     * 
+     * @param x
+     *          the x-coordinate of the other vector
+     * @param y
+     *          the y-coordinate of the other vector
+     * @param z
+     *          the z-coordinate of the other vector
+     * @param dest
+     *          will hold the result
+     * @return this
+     */
+    public Vector3f cross(float x, float y, float z, Vector3f dest) {
+        return dest.set(this.y * z - this.z * y,
+                        this.z * x - this.x * z,
+                        this.x * y - this.y * x);
+    }
+
+    /**
+     * Return the distance between this Vector and <code>v</code>.
+     * 
+     * @param v
+     *          the other vector
+     * @return the distance
+     */
+    public float distance(Vector3f v) {
+        return (float) Math.sqrt(
+                  (v.x - this.x) * (v.x - this.x)
+                + (v.y - this.y) * (v.y - this.y)
+                + (v.z - this.z) * (v.z - this.z));
+    }
+
+    /**
+     * Return the distance between <code>this</code> vector and <tt>(x, y, z)</tt>.
      * 
      * @param x
      *            the x-coordinate of the other vector
@@ -779,73 +755,67 @@ public class Vector4f implements Externalizable {
      *            the y-coordinate of the other vector
      * @param z
      *            the z-coordinate of the other vector
-     * @param w
-     *            the w-coordinate of the other vector
      * @return the euclidean distance
      */
-    public float distance(float x, float y, float z, float w) {
+    public float distance(float x, float y, float z) {
         return (float) Math.sqrt(
                 (x - this.x) * (x - this.x)
               + (y - this.y) * (y - this.y)
-              + (z - this.z) * (z - this.z)
-              + (w - this.w) * (w - this.w));
+              + (z - this.z) * (z - this.z));
     }
 
     /**
-     * Compute the dot product (inner product) of this vector and <code>v</code>
-     * .
+     * Return the dot product of this vector and the supplied vector.
      * 
      * @param v
-     *            the other vector
+     *          the other vector
      * @return the dot product
      */
-    public float dot(Vector4f v) {
-        return x * v.x + y * v.y + z * v.z + w * v.w;
+    public float dot(Vector3f v) {
+        return x * v.x + y * v.y + z * v.z;
     }
 
     /**
-     * Compute the dot product (inner product) of this vector and <tt>(x, y, z, w)</tt>.
+     * Return the dot product of this vector and the vector <tt>(x, y, z)</tt>.
      * 
      * @param x
-     *            the x-coordinate of the other vector
+     *          the x-coordinate of the other vector
      * @param y
-     *            the y-coordinate of the other vector
+     *          the y-coordinate of the other vector
      * @param z
-     *            the z-coordinate of the other vector
-     * @param w
-     *            the w-coordinate of the other vector
+     *          the z-coordinate of the other vector
      * @return the dot product
      */
-    public float dot(float x, float y, float z, float w) {
-        return this.x * x + this.y * y + this.z * z + this.w * w;
+    public float dot(float x, float y, float z) {
+        return this.x * x + this.y * y + this.z * z;
     }
 
     /**
-     * Return the cosine of the angle between this vector and the supplied vector. Use this instead of <code>Math.cos(angle(v))</code>.
+     * Return the cosine of the angle between this vector and the supplied vector. Use this instead of Math.cos(this.angle(v)).
      * 
-     * @see #angle(Vector4f)
+     * @see #angle(Vector3f)
      * 
      * @param v
      *          the other vector
      * @return the cosine of the angle
      */
-    public float angleCos(Vector4f v) {
-        double length1 = Math.sqrt(x * x + y * y + z * z + w * w);
-        double length2 = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w);
-        double dot = x * v.x + y * v.y + z * v.z + w * v.w;
+    public float angleCos(Vector3f v) {
+        double length1 = Math.sqrt(x * x + y * y + z * z);
+        double length2 = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+        double dot = x * v.x + y * v.y + z * v.z;
         return (float) (dot / (length1 * length2));
     }
 
     /**
      * Return the angle between this vector and the supplied vector.
      * 
-     * @see #angleCos(Vector4f)
+     * @see #angleCos(Vector3f)
      * 
      * @param v
      *          the other vector
      * @return the angle, in radians
      */
-    public float angle(Vector4f v) {
+    public float angle(Vector3f v) {
         float cos = angleCos(v);
         // This is because sometimes cos goes above 1 or below -1 because of lost precision
         cos = Math.min(cos, 1);
@@ -854,43 +824,42 @@ public class Vector4f implements Externalizable {
     }
 
     /**
+     * Set the components of this vector to be the component-wise minimum of this and the other vector.
+     *
+     * @param v
+     *          the other vector
+     * @return this
+     */
+    public Vector3f min(Vector3f v) {
+        this.x = Math.min(x, v.x);
+        this.y = Math.min(y, v.y);
+        this.z = Math.min(z, v.z);
+        return this;
+    }
+
+    /**
+     * Set the components of this vector to be the component-wise maximum of this and the other vector.
+     *
+     * @param v
+     *          the other vector
+     * @return this
+     */
+    public Vector3f max(Vector3f v) {
+        this.x = Math.max(x, v.x);
+        this.y = Math.max(y, v.y);
+        this.z = Math.max(z, v.z);
+        return this;
+    }
+
+    /**
      * Set all components to zero.
      * 
      * @return this
      */
-    public Vector4f zero() {
+    public Vector3f zero() {
         this.x = 0.0f;
         this.y = 0.0f;
         this.z = 0.0f;
-        this.w = 0.0f;
-        return this;
-    }
-
-    /**
-     * Negate this vector.
-     * 
-     * @return this
-     */
-    public Vector4f negate() {
-        x = -x;
-        y = -y;
-        z = -z;
-        w = -w;
-        return this;
-    }
-
-    /**
-     * Negate this vector and store the result in <code>dest</code>.
-     * 
-     * @param dest
-     *          will hold the result
-     * @return this
-     */
-    public Vector4f negate(Vector4f dest) {
-        dest.x = -x;
-        dest.y = -y;
-        dest.z = -z;
-        dest.w = -w;
         return this;
     }
 
@@ -914,59 +883,51 @@ public class Vector4f implements Externalizable {
      * @return the string representation
      */
     public String toString(NumberFormat formatter) {
-        return "(" + formatter.format(x) + " " + formatter.format(y) + " " + formatter.format(z) + " " + formatter.format(w) + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+        return "(" + formatter.format(x) + " " + formatter.format(y) + " " + formatter.format(z) + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeFloat(x);
         out.writeFloat(y);
         out.writeFloat(z);
-        out.writeFloat(w);
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException,
+            ClassNotFoundException {
         x = in.readFloat();
         y = in.readFloat();
         z = in.readFloat();
-        w = in.readFloat();
     }
 
     /**
-     * Set the components of this vector to be the component-wise minimum of
-     * this and the other vector.
-     *
-     * @param v
-     *            the other vector
+     * Negate this vector.
+     * 
      * @return this
      */
-    public Vector4f min(Vector4f v) {
-        this.x = Math.min(x, v.x);
-        this.y = Math.min(y, v.y);
-        this.z = Math.min(z, v.z);
-        this.w = Math.min(w, v.w);
+    public Vector3f negate() {
+        x = -x;
+        y = -y;
+        z = -z;
         return this;
     }
 
     /**
-     * Set the components of this vector to be the component-wise maximum of
-     * this and the other vector.
-     *
-     * @param v
-     *            the other vector
+     * Negate this vector and store the result in <code>dest</code>.
+     * 
+     * @param dest
+     *          will hold the result
      * @return this
      */
-    public Vector4f max(Vector4f v) {
-        this.x = Math.max(x, v.x);
-        this.y = Math.max(y, v.y);
-        this.z = Math.max(z, v.z);
-        this.w = Math.min(w, v.w);
+    public Vector3f negate(Vector3f dest) {
+        dest.x = -x;
+        dest.y = -y;
+        dest.z = -z;
         return this;
     }
 
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + Float.floatToIntBits(w);
         result = prime * result + Float.floatToIntBits(x);
         result = prime * result + Float.floatToIntBits(y);
         result = prime * result + Float.floatToIntBits(z);
@@ -980,9 +941,7 @@ public class Vector4f implements Externalizable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Vector4f other = (Vector4f) obj;
-        if (Float.floatToIntBits(w) != Float.floatToIntBits(other.w))
-            return false;
+        Vector3f other = (Vector3f) obj;
         if (Float.floatToIntBits(x) != Float.floatToIntBits(other.x))
             return false;
         if (Float.floatToIntBits(y) != Float.floatToIntBits(other.y))
@@ -990,6 +949,137 @@ public class Vector4f implements Externalizable {
         if (Float.floatToIntBits(z) != Float.floatToIntBits(other.z))
             return false;
         return true;
+    }
+
+    /**
+     * Reflect this vector about the given <code>normal</code> vector.
+     * 
+     * @param normal
+     *             the vector to reflect about
+     * @return this
+     */
+    public Vector3f reflect(Vector3f normal) {
+        float dot = this.dot(normal);
+        x = x - 2.0f * dot * normal.x;
+        y = y - 2.0f * dot * normal.y;
+        z = z - 2.0f * dot * normal.z;
+        return this;
+    }
+
+    /**
+     * Reflect this vector about the given normal vector.
+     * 
+     * @param x
+     *             the x-coordinate of the normal
+     * @param y
+     *             the y-coordinate of the normal
+     * @param z
+     *             the z-coordinate of the normal
+     * @return this
+     */
+    public Vector3f reflect(float x, float y, float z) {
+        float dot = this.dot(x, y, z);
+        this.x = this.x - 2.0f * dot * x;
+        this.y = this.y - 2.0f * dot * y;
+        this.z = this.z - 2.0f * dot * z;
+        return this;
+    }
+
+    /**
+     * Reflect this vector about the given <code>normal</code> vector and store the result in <code>dest</code>.
+     * 
+     * @param normal
+     *             the vector to reflect about
+     * @param dest
+     *             will hold the result
+     * @return this
+     */
+    public Vector3f reflect(Vector3f normal, Vector3f dest) {
+        float dot = this.dot(normal);
+        dest.x = x - 2.0f * dot * normal.x;
+        dest.y = y - 2.0f * dot * normal.y;
+        dest.z = z - 2.0f * dot * normal.z;
+        return this;
+    }
+
+    /**
+     * Reflect this vector about the given normal vector and store the result in <code>dest</code>.
+     * 
+     * @param x
+     *             the x-coordinate of the normal
+     * @param y
+     *             the y-coordinate of the normal
+     * @param z
+     *             the z-coordinate of the normal
+     * @param dest
+     *             will hold the result
+     * @return this
+     */
+    public Vector3f reflect(float x, float y, float z, Vector3f dest) {
+        float dot = this.dot(x, y, z);
+        dest.x = this.x - 2.0f * dot * x;
+        dest.y = this.y - 2.0f * dot * y;
+        dest.z = this.z - 2.0f * dot * z;
+        return this;
+    }
+
+    /**
+     * Compute the half vector between this and the other vector.
+     * 
+     * @param other
+     *             the other vector
+     * @return this
+     */
+    public Vector3f half(Vector3f other) {
+        return this.add(other).normalize();
+    }
+
+    /**
+     * Compute the half vector between this and the vector <tt>(x, y, z)</tt>.
+     * 
+     * @param x
+     *             the x-coordinate of the other vector
+     * @param y
+     *             the y-coordinate of the other vector
+     * @param z
+     *             the z-coordinate of the other vector
+     * @return this
+     */
+    public Vector3f half(float x, float y, float z) {
+        return this.add(x, y, z).normalize();
+    }
+
+    /**
+     * Compute the half vector between this and the other vector and store the result in <code>dest</code>.
+     * 
+     * @param other
+     *             the other vector
+     * @param dest
+     *             will hold the result
+     * @return this
+     */
+    public Vector3f half(Vector3f other, Vector3f dest) {
+        dest.set(this).add(other).normalize();
+        return this;
+    }
+
+    /**
+     * Compute the half vector between this and the vector <tt>(x, y, z)</tt> 
+     * and store the result in <code>dest</code>.
+     * 
+     * @param x
+     *             the x-coordinate of the other vector
+     * @param y
+     *             the y-coordinate of the other vector
+     * @param z
+     *             the z-coordinate of the other vector
+     * @param dest
+     *             will hold the result
+     * @return this
+     */
+    public Vector3f half(float x, float y, float z, Vector3f dest) {
+        dest.set(this).add(x, y, z).normalize();
+        return this;
     }
 
     /**
@@ -1005,16 +1095,15 @@ public class Vector4f implements Externalizable {
      *            will hold the result
      * @return this
      */
-    public Vector4f smoothStep(Vector4d v, float t, Vector4f dest) {
+    public Vector3f smoothStep(Vector3f v, float t, Vector3f dest) {
         dest.x = (float) Interpolate.smoothStep(x, v.x, t);
         dest.y = (float) Interpolate.smoothStep(y, v.y, t);
         dest.z = (float) Interpolate.smoothStep(x, v.z, t);
-        dest.w = (float) Interpolate.smoothStep(w, v.w, t);
         return this;
     }
 
     /**
-     * Compute a hermite interpolation between <code>this</code> vector and its
+     * Compute a hermite interpolation between <code>this</code> vector with its
      * associated tangent <code>t0</code> and the given vector <code>v</code>
      * with its tangent <code>t1</code> and store the result in
      * <code>dest</code>.
@@ -1031,11 +1120,10 @@ public class Vector4f implements Externalizable {
      *            will hold the result
      * @return this
      */
-    public Vector4f hermite(Vector4f t0, Vector4f v1, Vector4f t1, double t, Vector4f dest) {
+    public Vector3f hermite(Vector3f t0, Vector3f v1, Vector3f t1, float t, Vector3f dest) {
         dest.x = (float) Interpolate.hermite(x, t0.x, v1.x, t1.x, t);
         dest.y = (float) Interpolate.hermite(y, t0.y, v1.y, t1.y, t);
         dest.z = (float) Interpolate.hermite(z, t0.z, v1.z, t1.z, t);
-        dest.w = (float) Interpolate.hermite(z, t0.w, v1.w, t1.w, t);
         return this;
     }
 

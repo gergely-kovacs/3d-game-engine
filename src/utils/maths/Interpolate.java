@@ -20,7 +20,7 @@
  THE SOFTWARE.
 
  */
-package utils.math;
+package utils.maths;
 
 /**
  * Provides basic interpolation functions.

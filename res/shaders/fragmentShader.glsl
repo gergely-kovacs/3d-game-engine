@@ -30,5 +30,5 @@ void main() {
 	vec3 finalSpecular = dampedSpecular * reflectivity * lightColour;
 	
 	//fragColour = texture(texture_Diffuse, pass_Texture);
-	fragColour = vec4(diffuse, 1.0) * vec4(0.5, 0.0, 0.8, 1.0) + vec4(finalSpecular, 1.0);
+	fragColour = vec4(diffuse, 1.0) * vec4(0.2, 0.4, 0.8, 1.0) + vec4(finalSpecular, 1.0);
 }

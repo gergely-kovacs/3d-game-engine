@@ -1,17 +1,17 @@
 package objects;
 
-import utils.math.Vector3f;
+import utils.maths.Vec3f;
 
 public class Face {
-	public Vector3f vertexIndices = new Vector3f();
-	public Vector3f normalIndices = new Vector3f();
+	public Vec3f vertexIndices = new Vec3f();
+	public Vec3f normalIndices = new Vec3f();
 	
-	public Face(Vector3f vertexIndices, Vector3f normalIndices) {
+	public Face(Vec3f vertexIndices, Vec3f normalIndices) {
 		this.vertexIndices = vertexIndices;
 		this.normalIndices = normalIndices;
 	}
 	
-	public Face(Vector3f vertexIndices) {
+	public Face(Vec3f vertexIndices) {
 		this.vertexIndices = vertexIndices;
 	}
 }
