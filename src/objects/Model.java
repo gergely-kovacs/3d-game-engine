@@ -23,9 +23,7 @@ public class Model {
 	
 	public List<Vec3f> vertices = new ArrayList<Vec3f>();
 	public List<Vec3f> normals = new ArrayList<Vec3f>();
-	
 	public List<Vec2f> textures = new ArrayList<Vec2f>();
-	
 	public List<Face> faces = new ArrayList<Face>();
 	
 	private Vec3f position, angle, scale;
@@ -75,7 +73,12 @@ public class Model {
 						Float.valueOf(line.split(" ")[2].split("/")[2]),
 						Float.valueOf(line.split(" ")[3].split("/")[2]));
 					
-					faces.add(new Face(vertexIndices, normalIndices));
+					Vec3f textureIndices = new Vec3f(
+						Float.valueOf(line.split(" ")[1].split("/")[1]),
+						Float.valueOf(line.split(" ")[2].split("/")[1]),
+						Float.valueOf(line.split(" ")[3].split("/")[1]));
+					
+					faces.add(new Face(vertexIndices, normalIndices, textureIndices));
 				}
 				
 				else continue;
@@ -110,6 +113,12 @@ public class Model {
     		normalBuffer.put(normals.get(i).z);
     	} normalBuffer.flip();
     	
+    	FloatBuffer textureBuffer = BufferUtils.createFloatBuffer(textures.size() * 2);
+    	for (int i = 0; i < textures.size(); i ++) {
+    		textureBuffer.put(textures.get(i).x);
+    		textureBuffer.put(textures.get(i).y);
+    	} textureBuffer.flip();
+    	
     	ShortBuffer indexBuffer = BufferUtils.createShortBuffer(faces.size() * 3);
     	for (int i = 0; i < faces.size(); i ++) {
     		indexBuffer.put((short) (faces.get(i).vertexIndices.x - 1));
@@ -132,6 +141,12 @@ public class Model {
         GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         
+        vboTexID = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboTexID);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, textureBuffer, GL15.GL_STATIC_DRAW);
+        GL20.glVertexAttribPointer(2, 2, GL11.GL_FLOAT, false, 0, 0);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        
         GL30.glBindVertexArray(0);
         
         vboIndID = GL15.glGenBuffers();
@@ -144,6 +159,7 @@ public class Model {
 		GL30.glBindVertexArray(vaoID);
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
+        GL20.glEnableVertexAttribArray(2);
         
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboIndID);
         
@@ -153,6 +169,7 @@ public class Model {
         
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
+        GL20.glDisableVertexAttribArray(2);
         GL30.glBindVertexArray(0);
 	}
 	
@@ -161,10 +178,12 @@ public class Model {
     	
     	GL20.glDisableVertexAttribArray(0);
     	GL20.glDisableVertexAttribArray(1);
+    	GL20.glDisableVertexAttribArray(2);
     	
     	GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
     	GL15.glDeleteBuffers(vboVertID);
     	GL15.glDeleteBuffers(vboNormID);
+    	GL15.glDeleteBuffers(vboTexID);
     	
     	GL30.glBindVertexArray(0);
     	GL30.glDeleteVertexArrays(vaoID);

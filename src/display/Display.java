@@ -4,45 +4,46 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
 
+import de.matthiasmann.twl.utils.PNGDecoder;
+import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import input.InputHandler;
 import objects.Camera;
 import objects.Light;
 import objects.Model;
 import objects.Shader;
+import objects.ShaderProgram;
 import utils.maths.Matrix4f;
 import utils.maths.Vec3f;
 import utils.maths.Vector3f;
  
 public class Display {
-	private final int WIDTH = 800, HEIGHT = 600;
+	private final int WIDTH = 1280, HEIGHT = 720;
     private final String TITLE = "Nyuszi";
 	
-    private long window;
-    
-    private int vsID, fsID, pID,
-    	pMatLoc, vMatLoc, mMatLoc,
-    	lPosLoc, lColLoc,
-    	shineDamperLoc, reflectivityLoc;
-    
-    private Matrix4f pMat, vMat, mMat;
-    
-    private FloatBuffer matBuff;
-    
-    private GLFWKeyCallback keyCallback;
-    
     public static Model nyuszi;
-    
+    public static Light l;
     public static Camera camera;
+    
+    private ShaderProgram program;
+    private long window;
+    private GLFWKeyCallback keyCallback;
+    private int texID;
     
     public void run() {
         try {
@@ -53,18 +54,12 @@ public class Display {
             keyCallback.release();
         }
         finally {
-        	/*GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        	GL13.glActiveTexture(GL13.GL_TEXTURE0);
         	GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        	GL13.glActiveTexture(0);
         	GL11.glDeleteTextures(texID);
-        	GL13.glActiveTexture(0);*/
         	
-        	GL20.glUseProgram(0);
-        	GL20.glDetachShader(pID, vsID);
-        	GL20.glDetachShader(pID, fsID);
-        	 
-        	GL20.glDeleteShader(vsID);
-        	GL20.glDeleteShader(fsID);
-        	GL20.glDeleteProgram(pID);
+        	program.dispose();
         	
         	nyuszi.dispose();
         	
@@ -73,84 +68,72 @@ public class Display {
     }
  
     private void init() {
-        if ( glfwInit() != GL11.GL_TRUE )
-            throw new IllegalStateException("Unable to initialize GLFW");
+        if ( glfwInit() != GL11.GL_TRUE ) throw new IllegalStateException("Unable to initialize GLFW!");
  
         window = glfwCreateWindow(WIDTH, HEIGHT, TITLE, NULL, NULL);
-        if ( window == NULL )
-            throw new RuntimeException("Failed to create the GLFW window");
+        if ( window == NULL ) throw new RuntimeException("Failed to create a window!");
         
         glfwSetKeyCallback(window, keyCallback = new InputHandler());
 
         ByteBuffer vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         
-        glfwSetWindowPos(
-            window,
+        glfwSetWindowPos(window,
             (GLFWvidmode.width(vidmode) - WIDTH) / 2,
-            (GLFWvidmode.height(vidmode) - HEIGHT) / 2
-        );
+            (GLFWvidmode.height(vidmode) - HEIGHT) / 2 );
         
         glfwMakeContextCurrent(window);
         GLContext.createFromCurrent();
         
         glfwSwapInterval(1);
         
-        glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
+        glClearColor(0.0f, 0.05f, 0.1f, 1.0f);
         
         glEnable(GL_DEPTH_TEST);
         
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
         
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
  
     private void loop() {
-    	nyuszi = new Model("res/models/bunny2.obj",
+    	nyuszi = new Model("res/models/bunny3.obj",
 			new Vec3f(0f, 0f, 0f),
 			new Vec3f(0f, 0f, 0f),
 			new Vec3f(1.0f, 1.0f, 1.0f),
-			4.88f,
-			0.12f);
+			5f, 0.05f);
     	
-    	camera = new Camera(new Vector3f(0f, 0.1f, 0.5f), 0f, 0f, 0f);
+    	l = new Light(new Vec3f(0f, 0.5f, 0.5f), new Vec3f(0.8f, 0.8f, 0.8f));
+    	
+    	camera = new Camera(new Vector3f(0f, 0f, 0.5f), 0f, 0f, 0f);
+    	
+        int vsID = new Shader("res/shaders/vertexShader.glsl", GL20.GL_VERTEX_SHADER).getShaderID();
+        int fsID = new Shader("res/shaders/fragmentShader.glsl", GL20.GL_FRAGMENT_SHADER).getShaderID();
         
-        vsID = new Shader("res/shaders/vertexShader.glsl", GL20.GL_VERTEX_SHADER).getShaderID();
-        fsID = new Shader("res/shaders/fragmentShader.glsl", GL20.GL_FRAGMENT_SHADER).getShaderID();
+        ArrayList<String> attribs = new ArrayList<String>();
+        attribs.add("vertexPosition");
+        attribs.add("vertexNormal");
+        attribs.add("texture");
         
-        pID = GL20.glCreateProgram();
+        program = new ShaderProgram(vsID, fsID, attribs);
+        int pID = program.getpID();
+		 
+        texID = loadTexture("res/textures/nyuszi_diffuse.png", GL13.GL_TEXTURE0);
         
-        GL20.glAttachShader(pID, vsID);
-        GL20.glAttachShader(pID, fsID);
-        
-        GL20.glBindAttribLocation(pID, 0, "vertexPosition");
-        GL20.glBindAttribLocation(pID, 1, "vertexNormal");
-        //GL20.glBindAttribLocation(pID, 1, "texture");
-        
-        GL20.glLinkProgram(pID);
-        GL20.glValidateProgram(pID);
-        
-        //texID = loadTexture("res/textures/Texture1.png", GL13.GL_TEXTURE0);
-        
-        mMatLoc = GL20.glGetUniformLocation(pID, "model");
-        vMatLoc = GL20.glGetUniformLocation(pID, "view");
-        pMatLoc = GL20.glGetUniformLocation(pID, "projection");
-        
-        mMat = new Matrix4f();
-        vMat = new Matrix4f();
-        pMat = new Matrix4f();
-        
-        pMat.setPerspective(3.1415926535f / 180f * 60f, (float) WIDTH / (float) HEIGHT, 0.015f, 100f);
-        
-        matBuff = BufferUtils.createFloatBuffer(16);
-        
-        lPosLoc = GL20.glGetUniformLocation(pID, "lightPosition");
-        lColLoc = GL20.glGetUniformLocation(pID, "lightColour");
-        
-        Light l = new Light(new Vec3f(0f, 0.5f, 0.5f), new Vec3f(0.6f, 0.6f, 0.6f));
-        
-        shineDamperLoc = GL20.glGetUniformLocation(pID, "shineDamper");
+        int mMatLoc = GL20.glGetUniformLocation(pID, "model"),
+        vMatLoc = GL20.glGetUniformLocation(pID, "view"),
+        pMatLoc = GL20.glGetUniformLocation(pID, "projection"),
+        lPosLoc = GL20.glGetUniformLocation(pID, "lightPosition"),
+        lColLoc = GL20.glGetUniformLocation(pID, "lightColour"),
+        shineDamperLoc = GL20.glGetUniformLocation(pID, "shineDamper"),
         reflectivityLoc = GL20.glGetUniformLocation(pID, "reflectivity");
+        
+        Matrix4f mMat = new Matrix4f();
+        Matrix4f vMat = new Matrix4f();
+        Matrix4f pMat = new Matrix4f();
+        FloatBuffer matBuff = BufferUtils.createFloatBuffer(16);
+        
+        pMat.setPerspective(3.1415926535f / 180f * 101.25f, (float) WIDTH / (float) HEIGHT, 0.015f, 100f);
         
         while ( glfwWindowShouldClose(window) == GL_FALSE ) {
             vMat.identity();
@@ -179,13 +162,13 @@ public class Display {
             
             GL20.glUseProgram(pID);
             
-            /*GL13.glActiveTexture(GL13.GL_TEXTURE0);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, texID);*/
+            GL13.glActiveTexture(GL13.GL_TEXTURE0);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, texID);
             
             nyuszi.render();
             
-            /*GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-            GL13.glActiveTexture(0);*/
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+            GL13.glActiveTexture(0);
             
             GL20.glUseProgram(0);
             
@@ -195,7 +178,7 @@ public class Display {
         }
     }
     
-    /*private int loadTexture(String filename, int textureUnit) {
+    private int loadTexture(String filename, int textureUnit) {
         ByteBuffer buf = null;
         int tWidth = 0;
         int tHeight = 0;
@@ -208,8 +191,7 @@ public class Display {
             tWidth = decoder.getWidth();
             tHeight = decoder.getHeight();
              
-            buf = ByteBuffer.allocateDirect(
-                    4 * decoder.getWidth() * decoder.getHeight());
+            buf = ByteBuffer.allocateDirect(4 * decoder.getWidth() * decoder.getHeight());
             decoder.decode(buf, decoder.getWidth() * 4, Format.RGBA);
             buf.flip();
              
@@ -232,13 +214,11 @@ public class Display {
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
          
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, 
-                GL11.GL_NEAREST);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, 
-                GL11.GL_LINEAR_MIPMAP_LINEAR);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
          
         return texId;
-    }*/
+    }
  
     public static void main(String[] args) {
         new Display().run();
