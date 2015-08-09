@@ -59,9 +59,9 @@ public class Display {
         	GL13.glActiveTexture(0);
         	GL11.glDeleteTextures(texID);
         	
-        	program.dispose();
+        	//program.dispose();
         	
-        	nyuszi.dispose();
+        	//nyuszi.dispose();
         	
             glfwTerminate();
         }
@@ -90,14 +90,14 @@ public class Display {
         
         glEnable(GL_DEPTH_TEST);
         
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
+        //glEnable(GL_CULL_FACE);
+        //glCullFace(GL_BACK);
         
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
  
     private void loop() {
-    	nyuszi = new Model("res/models/bunny3.obj",
+    	nyuszi = new Model("res/models/die.obj",
 			new Vec3f(0f, 0f, 0f),
 			new Vec3f(0f, 0f, 0f),
 			new Vec3f(1.0f, 1.0f, 1.0f),
@@ -112,13 +112,13 @@ public class Display {
         
         ArrayList<String> attribs = new ArrayList<String>();
         attribs.add("vertexPosition");
-        attribs.add("vertexNormal");
         attribs.add("texture");
+        attribs.add("vertexNormal");
         
         program = new ShaderProgram(vsID, fsID, attribs);
         int pID = program.getpID();
 		 
-        texID = loadTexture("res/textures/nyuszi_diffuse.png", GL13.GL_TEXTURE0);
+        texID = loadTexture("res/textures/die_diffuse.png", GL13.GL_TEXTURE0);
         
         int mMatLoc = GL20.glGetUniformLocation(pID, "model"),
         vMatLoc = GL20.glGetUniformLocation(pID, "view"),
@@ -133,7 +133,7 @@ public class Display {
         Matrix4f pMat = new Matrix4f();
         FloatBuffer matBuff = BufferUtils.createFloatBuffer(16);
         
-        pMat.setPerspective(3.1415926535f / 180f * 101.25f, (float) WIDTH / (float) HEIGHT, 0.015f, 100f);
+        pMat.setPerspective(3.1415926535f / 180f * 45f, (float) WIDTH / (float) HEIGHT, 0.015f, 100f);
         
         while ( glfwWindowShouldClose(window) == GL_FALSE ) {
             vMat.identity();
@@ -214,7 +214,7 @@ public class Display {
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
          
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
          
         return texId;

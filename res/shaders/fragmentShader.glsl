@@ -29,5 +29,6 @@ void main() {
 	float dampedSpecular = pow(specularFactor, shineDamper);
 	vec3 finalSpecular = dampedSpecular * reflectivity * lightColour;
 	
-	fragColour = vec4(diffuse, 1.0) * texture(texture_Diffuse, pass_Texture) + vec4(finalSpecular, 1.0);
+	//fragColour = vec4(diffuse, 1.0) * texture(texture_Diffuse, pass_Texture) + vec4(finalSpecular, 1.0);
+	fragColour = texture(texture_Diffuse, pass_Texture);
 }

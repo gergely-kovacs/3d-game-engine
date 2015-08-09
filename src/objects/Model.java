@@ -6,9 +6,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -22,8 +24,8 @@ import utils.maths.Vec3f;
 public class Model {
 	
 	public List<Vec3f> vertices = new ArrayList<Vec3f>();
-	public List<Vec3f> normals = new ArrayList<Vec3f>();
 	public List<Vec2f> textures = new ArrayList<Vec2f>();
+	public List<Vec3f> normals = new ArrayList<Vec3f>();
 	public List<Face> faces = new ArrayList<Face>();
 	
 	private Vec3f position, angle, scale;
@@ -50,7 +52,7 @@ public class Model {
 				else if (line.startsWith("vt ")) {
 					Vec2f texture = new Vec2f(
 						Float.valueOf(line.split(" ")[1]),
-						Float.valueOf(line.split(" ")[2]));
+						1f - Float.valueOf(line.split(" ")[2]));
 					textures.add(texture);
 				}
 				
@@ -68,17 +70,17 @@ public class Model {
 						Float.valueOf(line.split(" ")[2].split("/")[0]),
 						Float.valueOf(line.split(" ")[3].split("/")[0]));
 					
-					Vec3f normalIndices = new Vec3f(
-						Float.valueOf(line.split(" ")[1].split("/")[2]),
-						Float.valueOf(line.split(" ")[2].split("/")[2]),
-						Float.valueOf(line.split(" ")[3].split("/")[2]));
-					
 					Vec3f textureIndices = new Vec3f(
 						Float.valueOf(line.split(" ")[1].split("/")[1]),
 						Float.valueOf(line.split(" ")[2].split("/")[1]),
 						Float.valueOf(line.split(" ")[3].split("/")[1]));
 					
-					faces.add(new Face(vertexIndices, normalIndices, textureIndices));
+					Vec3f normalIndices = new Vec3f(
+						Float.valueOf(line.split(" ")[1].split("/")[2]),
+						Float.valueOf(line.split(" ")[2].split("/")[2]),
+						Float.valueOf(line.split(" ")[3].split("/")[2]));
+					
+					faces.add(new Face(vertexIndices, textureIndices, normalIndices));
 				}
 				
 				else continue;
@@ -99,32 +101,64 @@ public class Model {
 	}
 	
 	public void loadToBuffers() {
-		FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertices.size() * 3);
-    	for (int i = 0; i < vertices.size(); i ++) {
-    		vertexBuffer.put(vertices.get(i).x);
-    		vertexBuffer.put(vertices.get(i).y);
-    		vertexBuffer.put(vertices.get(i).z);
-    	} vertexBuffer.flip();
-    	
-    	FloatBuffer normalBuffer = BufferUtils.createFloatBuffer(normals.size() * 3);
-    	for (int i = 0; i < normals.size(); i ++) {
-    		normalBuffer.put(normals.get(i).x);
-    		normalBuffer.put(normals.get(i).y);
-    		normalBuffer.put(normals.get(i).z);
-    	} normalBuffer.flip();
-    	
-    	FloatBuffer textureBuffer = BufferUtils.createFloatBuffer(textures.size() * 2);
-    	for (int i = 0; i < textures.size(); i ++) {
-    		textureBuffer.put(textures.get(i).x);
-    		textureBuffer.put(textures.get(i).y);
-    	} textureBuffer.flip();
-    	
-    	ShortBuffer indexBuffer = BufferUtils.createShortBuffer(faces.size() * 3);
-    	for (int i = 0; i < faces.size(); i ++) {
-    		indexBuffer.put((short) (faces.get(i).vertexIndices.x - 1));
-    		indexBuffer.put((short) (faces.get(i).vertexIndices.y - 1));
-    		indexBuffer.put((short) (faces.get(i).vertexIndices.z - 1));
-    	} indexBuffer.flip();
+		FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(faces.size() * 9);
+		FloatBuffer textureBuffer = BufferUtils.createFloatBuffer(faces.size() * 6);
+		FloatBuffer normalBuffer = BufferUtils.createFloatBuffer(faces.size() * 9);
+		IntBuffer indexBuffer = BufferUtils.createIntBuffer(faces.size() * 3);
+		Map<String, Integer> indexMap = new HashMap<String, Integer>();
+		String key;
+		
+    	for (int i = 0; i < faces.size(); i++) {
+    		for (int j = 0; j < 3; j++) {
+    			if (j == 0) {
+		    		key = faces.get(i).toString(1);
+		    		if (!indexMap.containsKey(key)) {
+						indexMap.put(key, i * 3 + j);
+			    		indexBuffer.put(i * 3 + j);
+			    		vertexBuffer.put(vertices.get((int) faces.get(i).vertexIndices.x - 1).x);
+			    		vertexBuffer.put(vertices.get((int) faces.get(i).vertexIndices.x - 1).y);
+			    		vertexBuffer.put(vertices.get((int) faces.get(i).vertexIndices.x - 1).z);
+			    		textureBuffer.put(textures.get((int) faces.get(i).textureIndices.x - 1).x);
+			    		textureBuffer.put(textures.get((int) faces.get(i).textureIndices.x - 1).y);
+			    		normalBuffer.put(normals.get((int) faces.get(i).normalIndices.x - 1).x);
+			    		normalBuffer.put(normals.get((int) faces.get(i).normalIndices.x - 1).y);
+			    		normalBuffer.put(normals.get((int) faces.get(i).normalIndices.x - 1).z);
+		    		} else { indexBuffer.put(indexMap.get(key)); System.out.println("Reused: " + i * 3 + j); }
+    			}
+    			
+    			else if (j == 1) {
+		    		key = faces.get(i).toString(2);
+		    		if (!indexMap.containsKey(key)) {
+		    			indexMap.put(key, i * 3 + j);
+			    		indexBuffer.put(i * 3 + j);
+			    		vertexBuffer.put(vertices.get((int) faces.get(i).vertexIndices.y - 1).x);
+			    		vertexBuffer.put(vertices.get((int) faces.get(i).vertexIndices.y - 1).y);
+			    		vertexBuffer.put(vertices.get((int) faces.get(i).vertexIndices.y - 1).z);
+			    		textureBuffer.put(textures.get((int) faces.get(i).textureIndices.y - 1).x);
+			    		textureBuffer.put(textures.get((int) faces.get(i).textureIndices.y - 1).y);
+			    		normalBuffer.put(normals.get((int) faces.get(i).normalIndices.y - 1).x);
+			    		normalBuffer.put(normals.get((int) faces.get(i).normalIndices.y - 1).y);
+			    		normalBuffer.put(normals.get((int) faces.get(i).normalIndices.y - 1).z);
+		    		} else { indexBuffer.put(indexMap.get(key)); System.out.println("Reused: " + i * 3 + j); }
+    			}
+    			
+    			else if (j == 2) {
+		    		key = faces.get(i).toString(3);
+		    		if (!indexMap.containsKey(key)) {
+		    			indexMap.put(key, i * 3 + j);
+			    		indexBuffer.put(i * 3 + j);
+			    		vertexBuffer.put(vertices.get((int) faces.get(i).vertexIndices.z - 1).x);
+			    		vertexBuffer.put(vertices.get((int) faces.get(i).vertexIndices.z - 1).y);
+			    		vertexBuffer.put(vertices.get((int) faces.get(i).vertexIndices.z - 1).z);
+			    		textureBuffer.put(textures.get((int) faces.get(i).textureIndices.z - 1).x);
+			    		textureBuffer.put(textures.get((int) faces.get(i).textureIndices.z - 1).y);
+			    		normalBuffer.put(normals.get((int) faces.get(i).normalIndices.z - 1).x);
+			    		normalBuffer.put(normals.get((int) faces.get(i).normalIndices.z - 1).y);
+			    		normalBuffer.put(normals.get((int) faces.get(i).normalIndices.z - 1).z);
+		    		} else { indexBuffer.put(indexMap.get(key)); System.out.println("Reused: " + i * 3 + j); }
+    			}
+    		}
+    	} vertexBuffer.flip(); textureBuffer.flip(); normalBuffer.flip(); indexBuffer.flip();
     	
         vaoID = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vaoID);
@@ -135,16 +169,16 @@ public class Model {
         GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         
-        vboNormID = GL15.glGenBuffers();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboNormID);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, normalBuffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, 0, 0);
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-        
         vboTexID = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboTexID);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, textureBuffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(2, 2, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, 0);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        
+        vboNormID = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboNormID);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, normalBuffer, GL15.GL_STATIC_DRAW);
+        GL20.glVertexAttribPointer(2, 3, GL11.GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         
         GL30.glBindVertexArray(0);
@@ -163,7 +197,7 @@ public class Model {
         
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboIndID);
         
-        GL11.glDrawElements(GL_TRIANGLES, faces.size() * 3, GL_UNSIGNED_SHORT, 0);
+        GL11.glDrawElements(GL_TRIANGLES, faces.size() * 3, GL_UNSIGNED_INT, 0);
         
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
         
@@ -182,8 +216,8 @@ public class Model {
     	
     	GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
     	GL15.glDeleteBuffers(vboVertID);
-    	GL15.glDeleteBuffers(vboNormID);
     	GL15.glDeleteBuffers(vboTexID);
+    	GL15.glDeleteBuffers(vboNormID);
     	
     	GL30.glBindVertexArray(0);
     	GL30.glDeleteVertexArrays(vaoID);

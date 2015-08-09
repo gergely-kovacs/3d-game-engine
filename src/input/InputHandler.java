@@ -18,7 +18,7 @@ public class InputHandler extends GLFWKeyCallback {
 	
 	@Override
 	public void invoke(long window, int key, int scancode, int action, int mods) {
-		//if ( action == GLFW_RELEASE ) {
+		if ( action != GLFW_RELEASE ) {
             switch (key) {
                 case GLFW_KEY_ESCAPE:
                 	glfwSetWindowShouldClose(window, GL_TRUE);
@@ -56,6 +56,6 @@ public class InputHandler extends GLFWKeyCallback {
                     Display.camera.getPosition().x += posDelta;
                     break;
             }
-		//}
+		}
 	}
 }
