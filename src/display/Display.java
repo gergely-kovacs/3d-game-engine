@@ -90,14 +90,14 @@ public class Display {
         
         glEnable(GL_DEPTH_TEST);
         
-        //glEnable(GL_CULL_FACE);
-        //glCullFace(GL_BACK);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
         
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
  
     private void loop() {
-    	nyuszi = new Model("res/models/die.obj",
+    	nyuszi = new Model("res/models/bunny3.obj",
 			new Vec3f(0f, 0f, 0f),
 			new Vec3f(0f, 0f, 0f),
 			new Vec3f(1.0f, 1.0f, 1.0f),
@@ -118,7 +118,7 @@ public class Display {
         program = new ShaderProgram(vsID, fsID, attribs);
         int pID = program.getpID();
 		 
-        texID = loadTexture("res/textures/die_diffuse.png", GL13.GL_TEXTURE0);
+        texID = loadTexture("res/textures/bunny_diffuse.png", GL13.GL_TEXTURE0);
         
         int mMatLoc = GL20.glGetUniformLocation(pID, "model"),
         vMatLoc = GL20.glGetUniformLocation(pID, "view"),
