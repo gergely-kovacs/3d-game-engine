@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL20;
 
 public class Shader {
 
-	private int shaderID;
+	private int shaderId;
 	
 	public Shader(String filename, int type) {
 		StringBuilder shaderSource = new StringBuilder();
@@ -26,12 +26,16 @@ public class Shader {
             System.exit(-1);
         }
          
-        shaderID = GL20.glCreateShader(type);
-        GL20.glShaderSource(shaderID, shaderSource);
-        GL20.glCompileShader(shaderID);
+        shaderId = GL20.glCreateShader(type);
+        GL20.glShaderSource(shaderId, shaderSource);
+        GL20.glCompileShader(shaderId);
 	}
 
-	public int getShaderID() {
-		return shaderID;
+	public int getShaderId() {
+		return shaderId;
+	}
+	
+	public void dispose() {
+		GL20.glDeleteShader(shaderId);
 	}
 }

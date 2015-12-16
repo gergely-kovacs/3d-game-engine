@@ -20,7 +20,7 @@
  THE SOFTWARE.
 
  */
-package utils.maths;
+package util.maths;
 
 import java.io.Externalizable;
 import java.io.IOException;

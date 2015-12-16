@@ -20,7 +20,7 @@
  THE SOFTWARE.
 
  */
-package utils.maths;
+package util.maths;
 
 import java.io.Serializable;
 import java.nio.FloatBuffer;

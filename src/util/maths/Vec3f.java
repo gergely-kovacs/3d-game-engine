@@ -1,4 +1,4 @@
-package utils.maths;
+package util.maths;
 
 public class Vec3f {
 	public float x, y, z;

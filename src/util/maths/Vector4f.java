@@ -20,7 +20,7 @@
  THE SOFTWARE.
 
  */
-package utils.maths;
+package util.maths;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -29,76 +29,47 @@ import java.io.ObjectOutput;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-
 /**
- * Contains the definition of a Vector comprising 4 doubles and associated transformations.
+ * Contains the definition of a Vector comprising 4 floats and associated
+ * transformations.
  * 
  * @author Richard Greenlees
  * @author Kai Burjack
  */
-public class Vector4d implements Externalizable {
+public class Vector4f implements Externalizable {
 
     private static final long serialVersionUID = 1L;   
 
     /**
      * The x-coordinate of the vector.
      */
-    public double x;
+    public float x;
     /**
      * The y-coordinate of the vector.
      */
-    public double y;
+    public float y;
     /**
      * The z-coordinate of the vector.
      */
-    public double z;
+    public float z;
     /**
      * The w-coordinate of the vector.
      */
-    public double w = 1.0;
+    public float w = 1.0f;
 
     /**
-     * Create a new {@link Vector4d} of <code>(0, 0, 0, 1)</code>.
+     * Create a new {@link Vector4f} of <code>(0, 0, 0, 1)</code>.
      */
-    public Vector4d() {
+    public Vector4f() {
     }
 
     /**
-     * Create a new {@link Vector4d} with the same values as <code>v</code>.
-     * 
-     * @param v
-     *            the {@link Vector4d} to copy the values from
-     */
-    public Vector4d(Vector4d v) {
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
-        this.w = v.w;
-    }
-
-    /**
-     * Create a new {@link Vector4d} with the first three components from the
-     * given <code>v</code> and the given <code>w</code>.
-     * 
-     * @param v
-     *            the {@link Vector3d}
-     * @param w
-     *            the w value
-     */
-    public Vector4d(Vector3d v, double w) {
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
-        this.w = w;
-    }
-
-    /**
-     * Create a new {@link Vector4d} with the same values as <code>v</code>.
+     * Create a new {@link Vector4f} with the same values as <code>v</code>.
      * 
      * @param v
      *            the {@link Vector4f} to copy the values from
      */
-    public Vector4d(Vector4f v) {
+    public Vector4f(Vector4f v) {
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
@@ -106,7 +77,7 @@ public class Vector4d implements Externalizable {
     }
 
     /**
-     * Create a new {@link Vector4d} with the first three components from the
+     * Create a new {@link Vector4f} with the first three components from the
      * given <code>v</code> and the given <code>w</code>.
      * 
      * @param v
@@ -114,7 +85,7 @@ public class Vector4d implements Externalizable {
      * @param w
      *            the w value
      */
-    public Vector4d(Vector3f v, double w) {
+    public Vector4f(Vector3f v, float w) {
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
@@ -133,7 +104,7 @@ public class Vector4d implements Externalizable {
      * @param w
      *          the value of w
      */
-    public Vector4d(double x, double y, double z, double w) {
+    public Vector4f(float x, float y, float z, float w) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -141,50 +112,17 @@ public class Vector4d implements Externalizable {
     }
 
     /**
-     * Set this {@link Vector4d} to the values of the given <code>v</code>.
+     * Set this {@link Vector4f} to the values of the given <code>v</code>.
      * 
      * @param v
      *            the vector whose values will be copied into this
      * @return this
      */
-    public Vector4d set(Vector4d v) {
+    public Vector4f set(Vector4f v) {
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
         this.w = v.w;
-        return this;
-    }
-
-    /**
-     * Set this {@link Vector4d} to the values of the given <code>v</code>.
-     * 
-     * @param v
-     *            the vector whose values will be copied into this
-     * @return this
-     */
-    public Vector4d set(Vector4f v) {
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
-        this.w = v.w;
-        return this;
-    }
-
-    /**
-     * Set the first three components of this to the components of
-     * <code>v</code> and the last component to <code>w</code>.
-     * 
-     * @param v
-     *            the {@link Vector3d} to copy
-     * @param w
-     *            the w component
-     * @return this
-     */
-    public Vector4d set(Vector3d v, double w) {
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
-        this.w = w;
         return this;
     }
 
@@ -198,7 +136,7 @@ public class Vector4d implements Externalizable {
      *            the w component
      * @return this
      */
-    public Vector4d set(Vector3f v, double w) {
+    public Vector4f set(Vector3f v, float w) {
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
@@ -219,7 +157,7 @@ public class Vector4d implements Externalizable {
      *            the w component
      * @return this
      */
-    public Vector4d set(double x, double y, double z, double w) {
+    public Vector4f set(float x, float y, float z, float w) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -234,22 +172,7 @@ public class Vector4d implements Externalizable {
      *          the vector to subtract
      * @return this
      */
-    public Vector4d sub(Vector4d v) {
-        x -= v.x;
-        y -= v.y;
-        z -= v.z;
-        w -= v.w;
-        return this;
-    }
-
-    /**
-     * Subtract the supplied vector from this one.
-     * 
-     * @param v
-     *          the vector to subtract
-     * @return this
-     */
-    public Vector4d sub(Vector4f v) {
+    public Vector4f sub(Vector4f v) {
         x -= v.x;
         y -= v.y;
         z -= v.z;
@@ -270,11 +193,28 @@ public class Vector4d implements Externalizable {
      *          the w-coordinate to subtract
      * @return this
      */
-    public Vector4d sub(double x, double y, double z, double w) {
+    public Vector4f sub(float x, float y, float z, float w) {
         this.x -= x;
         this.y -= y;
         this.z -= z;
         this.w -= w;
+        return this;
+    }
+
+    /**
+     * Subtract the supplied vector from this one and store the result in <code>dest</code>.
+     * 
+     * @param v
+     *          the vector to subtract from <code>this</code>
+     * @param dest
+     *          will hold the result
+     * @return this
+     */
+    public Vector4f sub(Vector4f v, Vector4f dest) {
+        dest.x = x - v.x;
+        dest.y = y - v.y;
+        dest.z = z - v.z;
+        dest.w = w - v.w;
         return this;
     }
 
@@ -293,63 +233,12 @@ public class Vector4d implements Externalizable {
      *          will hold the result
      * @return this
      */
-    public Vector4d sub(double x, double y, double z, double w, Vector4d dest) {
+    public Vector4f sub(float x, float y, float z, float w, Vector4f dest) {
         dest.x = this.x - x;
         dest.y = this.y - y;
         dest.z = this.z - z;
         dest.w = this.w - w;
         return this;
-    }
-
-    /**
-     * Subtract <code>v2</code> from <code>v1</code> and store the result in <code>dest</code>.
-     * 
-     * @param v1
-     *          the left operand
-     * @param v2
-     *          the right operand
-     * @param dest
-     *          will hold the result
-     */
-    public static void sub(Vector4d v1, Vector4d v2, Vector4d dest) {
-        dest.x = v1.x - v2.x;
-        dest.y = v1.y - v2.y;
-        dest.z = v1.z - v2.z;
-        dest.w = v1.w - v2.w;
-    }
-
-    /**
-     * Subtract <code>v2</code> from <code>v1</code> and store the result in <code>dest</code>.
-     * 
-     * @param v1
-     *          the left operand
-     * @param v2
-     *          the right operand
-     * @param dest
-     *          will hold the result
-     */
-    public static void sub(Vector4d v1, Vector4f v2, Vector4d dest) {
-        dest.x = v1.x - v2.x;
-        dest.y = v1.y - v2.y;
-        dest.z = v1.z - v2.z;
-        dest.w = v1.w - v2.w;
-    }
-
-    /**
-     * Subtract <code>v2</code> from <code>v1</code> and store the result in <code>dest</code>.
-     * 
-     * @param v1
-     *          the left operand
-     * @param v2
-     *          the right operand
-     * @param dest
-     *          will hold the result
-     */
-    public static void sub(Vector4f v1, Vector4d v2, Vector4d dest) {
-        dest.x = v1.x - v2.x;
-        dest.y = v1.y - v2.y;
-        dest.z = v1.z - v2.z;
-        dest.w = v1.w - v2.w;
     }
 
     /**
@@ -359,7 +248,7 @@ public class Vector4d implements Externalizable {
      *          the vector to add
      * @return this
      */
-    public Vector4d add(Vector4d v) {
+    public Vector4f add(Vector4f v) {
         x += v.x;
         y += v.y;
         z += v.z;
@@ -368,19 +257,36 @@ public class Vector4d implements Externalizable {
     }
 
     /**
-     * Add <tt>(x, y, z, w)</tt> to this.
+     * Add the supplied vector to this one and store the result in <code>dest</code>.
      * 
-     * @param x
-     *          the x-coordinate to subtract
-     * @param y
-     *          the y-coordinate to subtract
-     * @param z
-     *          the z-coordinate to subtract
-     * @param w
-     *          the w-coordinate to subtract
+     * @param v
+     *          the vector to add
+     * @param dest
+     *          will hold the result
      * @return this
      */
-    public Vector4d add(double x, double y, double z, double w) {
+    public Vector4f add(Vector4f v, Vector4f dest) {
+        dest.x = x + v.x;
+        dest.y = y + v.y;
+        dest.z = z + v.z;
+        dest.w = w + v.w;
+        return this;
+    }
+
+    /**
+     * Increment the components of this vector by the given values.
+     * 
+     * @param x
+     *          the x-coordinate to add
+     * @param y
+     *          the y-coordinate to add
+     * @param z
+     *          the z-coordinate to add
+     * @param w
+     *          the w-coordinate to add
+     * @return this
+     */
+    public Vector4f add(float x, float y, float z, float w) {
         this.x += x;
         this.y += y;
         this.z += z;
@@ -389,92 +295,26 @@ public class Vector4d implements Externalizable {
     }
 
     /**
-     * Add <tt>(x, y, z, w)</tt> to this and store the result in <code>dest</code>.
+     * Increment the components of this vector by the given values and store the result in <code>dest</code>.
      * 
      * @param x
-     *          the x-coordinate to subtract
+     *          the x-coordinate to add
      * @param y
-     *          the y-coordinate to subtract
+     *          the y-coordinate to add
      * @param z
-     *          the z-coordinate to subtract
+     *          the z-coordinate to add
      * @param w
-     *          the w-coordinate to subtract
+     *          the w-coordinate to add
      * @param dest
      *          will hold the result
      * @return this
      */
-    public Vector4d add(double x, double y, double z, double w, Vector4d dest) {
-        dest.x = this.x - x;
-        dest.y = this.y - y;
-        dest.z = this.z - z;
-        dest.w = this.w - w;
+    public Vector4f add(float x, float y, float z, float w, Vector4f dest) {
+        dest.x = this.x + x;
+        dest.y = this.y + y;
+        dest.z = this.z + z;
+        dest.w = this.w + w;
         return this;
-    }
-
-    /**
-     * Add the supplied vector to this one.
-     * 
-     * @param v
-     *          the vector to add
-     * @return this
-     */
-    public Vector4d add(Vector4f v) {
-        x += v.x;
-        y += v.y;
-        z += v.z;
-        w += v.w;
-        return this;
-    }
-
-    /**
-     * Add <code>v2</code> to <code>v1</code> and store the result in <code>dest</code>.
-     * 
-     * @param v1
-     *          the first addend
-     * @param v2
-     *          the second addend
-     * @param dest
-     *          will hold the result
-     */
-    public static void add(Vector4d v1, Vector4d v2, Vector4d dest) {
-        dest.x = v1.x + v2.x;
-        dest.y = v1.y + v2.y;
-        dest.z = v1.z + v2.z;
-        dest.w = v1.w + v2.w;
-    }
-
-    /**
-     * Add <code>v2</code> to <code>v1</code> and store the result in <code>dest</code>.
-     * 
-     * @param v1
-     *          the first addend
-     * @param v2
-     *          the second addend
-     * @param dest
-     *          will hold the result
-     */
-    public static void add(Vector4d v1, Vector4f v2, Vector4d dest) {
-        dest.x = v1.x + v2.x;
-        dest.y = v1.y + v2.y;
-        dest.z = v1.z + v2.z;
-        dest.w = v1.w + v2.w;
-    }
-
-    /**
-     * Add <code>v2</code> to <code>v1</code> and store the result in <code>dest</code>.
-     * 
-     * @param v1
-     *          the first addend
-     * @param v2
-     *          the second addend
-     * @param dest
-     *          will hold the result
-     */
-    public static void add(Vector4f v1, Vector4d v2, Vector4d dest) {
-        dest.x = v1.x + v2.x;
-        dest.y = v1.y + v2.y;
-        dest.z = v1.z + v2.z;
-        dest.w = v1.w + v2.w;
     }
 
     /**
@@ -486,7 +326,7 @@ public class Vector4d implements Externalizable {
      *          the second multiplicand
      * @return this
      */
-    public Vector4d fma(Vector4d a, Vector4d b) {
+    public Vector4f fma(Vector4f a, Vector4f b) {
         x += a.x * b.x;
         y += a.y * b.y;
         z += a.z * b.z;
@@ -503,7 +343,7 @@ public class Vector4d implements Externalizable {
      *          the second multiplicand
      * @return this
      */
-    public Vector4d fma(double a, Vector4d b) {
+    public Vector4f fma(float a, Vector4f b) {
         x += a * b.x;
         y += a * b.y;
         z += a * b.z;
@@ -523,7 +363,7 @@ public class Vector4d implements Externalizable {
      *          will hold the result
      * @return this
      */
-    public Vector4d fma(Vector4d a, Vector4d b, Vector4d dest) {
+    public Vector4f fma(Vector4f a, Vector4f b, Vector4f dest) {
         dest.x = x + a.x * b.x;
         dest.y = y + a.y * b.y;
         dest.z = z + a.z * b.z;
@@ -543,7 +383,7 @@ public class Vector4d implements Externalizable {
      *          will hold the result
      * @return this
      */
-    public Vector4d fma(double a, Vector4d b, Vector4d dest) {
+    public Vector4f fma(float a, Vector4f b, Vector4f dest) {
         dest.x = x + a * b.x;
         dest.y = y + a * b.y;
         dest.z = z + a * b.z;
@@ -552,30 +392,30 @@ public class Vector4d implements Externalizable {
     }
 
     /**
-     * Multiply this {@link Vector4d} component-wise by the given {@link Vector4d}.
+     * Multiply this Vector4f component-wise by another Vector4f.
      * 
      * @param v
-     *          the vector to multiply by
+     *          the other vector
      * @return this
      */
-    public Vector4d mul(Vector4d v) {
+    public Vector4f mul(Vector4f v) {
         x *= v.x;
         y *= v.y;
         z *= v.z;
-        z *= v.w;
+        w *= v.w;
         return this;
     }
 
     /**
-     * Multiply this {@link Vector4d} component-wise by the given {@link Vector4d} and store the result in <code>dest</code>.
+     * Multiply this Vector4f component-wise by another Vector4f and store the result in <code>dest</code>.
      * 
      * @param v
-     * 			the vector to multiply this by
+     *          the other vector
      * @param dest
-     * 			will hold the result
+     *          will hold the result
      * @return this
      */
-    public Vector4d mul(Vector4d v, Vector4d dest) {
+    public Vector4f mul(Vector4f v, Vector4f dest) {
         dest.x = x * v.x;
         dest.y = y * v.y;
         dest.z = z * v.z;
@@ -584,30 +424,30 @@ public class Vector4d implements Externalizable {
     }
 
     /**
-     * Divide this {@link Vector4d} component-wise by the given {@link Vector4d}.
+     * Divide this Vector4f component-wise by another Vector4f.
      * 
      * @param v
      *          the vector to divide by
      * @return this
      */
-    public Vector4d div(Vector4d v) {
+    public Vector4f div(Vector4f v) {
         x /= v.x;
         y /= v.y;
         z /= v.z;
-        z /= v.w;
+        w /= v.w;
         return this;
     }
 
     /**
-     * Divide this {@link Vector4d} component-wise by the given {@link Vector4d} and store the result in <code>dest</code>.
+     * Divide this Vector4f component-wise by another Vector4f and store the result in <code>dest</code>.
      * 
      * @param v
-     * 			the vector to divide this by
+     *          the vector to divide by
      * @param dest
-     * 			will hold the result
+     *          will hold the result
      * @return this
      */
-    public Vector4d div(Vector4d v, Vector4d dest) {
+    public Vector4f div(Vector4f v, Vector4f dest) {
         dest.x = x / v.x;
         dest.y = y / v.y;
         dest.z = z / v.z;
@@ -616,76 +456,28 @@ public class Vector4d implements Externalizable {
     }
 
     /**
-     * Multiply this {@link Vector4d} component-wise by the given {@link Vector4f}.
-     * 
-     * @param v
-     *          the vector to multiply by
-     * @return this
-     */
-    public Vector4d mul(Vector4f v) {
-        x *= v.x;
-        y *= v.y;
-        z *= v.z;
-        z *= v.w;
-        return this;
-    }
-
-    /**
-     * Multiply this {@link Vector4d} by the given matrix <code>mat</code>.
+     * Multiply this Vector4f by the given matrix mat and store the result in
+     * <code>this</code>.
      * 
      * @param mat
-     *          the matrix to multiply by
+     *            the matrix to multiply the vector with
      * @return this
      */
-    public Vector4d mul(Matrix4d mat) {
+    public Vector4f mul(Matrix4f mat) {
         return mul(mat, this);
     }
 
     /**
-     * Multiply this {@link Vector4d} by the given matrix mat and store the result in <code>dest</code>.
+     * Multiply this Vector4f by the given matrix mat and store the result in
+     * <code>dest</code>.
      * 
      * @param mat
-     *          the matrix to multiply <code>this</code> by
+     *            the matrix to multiply the vector with
      * @param dest
-     *          will hold the result
+     *            the destination vector to hold the result
      * @return this
      */
-    public Vector4d mul(Matrix4d mat, Vector4d dest) {
-        if (this != dest) {
-            dest.x = mat.m00 * x + mat.m10 * y + mat.m20 * z + mat.m30 * w;
-            dest.y = mat.m01 * x + mat.m11 * y + mat.m21 * z + mat.m31 * w;
-            dest.z = mat.m02 * x + mat.m12 * y + mat.m22 * z + mat.m32 * w;
-            dest.w = mat.m03 * x + mat.m13 * y + mat.m23 * z + mat.m33 * w;  
-        } else {
-            dest.set(mat.m00 * x + mat.m10 * y + mat.m20 * z + mat.m30 * w,
-                     mat.m01 * x + mat.m11 * y + mat.m21 * z + mat.m31 * w,
-                     mat.m02 * x + mat.m12 * y + mat.m22 * z + mat.m32 * w, 
-                     mat.m03 * x + mat.m13 * y + mat.m23 * z + mat.m33 * w);
-        }
-        return this;
-    }
-
-    /**
-     * Multiply this {@link Vector4d} by the given matrix <code>mat</code>.
-     * 
-     * @param mat
-     *          the matrix to multiply by
-     * @return this
-     */
-    public Vector4d mul(Matrix4f mat) {
-        return mul(mat, this);
-    }
-
-    /**
-     * Multiply this Vector4d by the given matrix mat and store the result in <code>dest</code>.
-     *
-     * @param mat
-     *          the matrix to multiply <code>this</code> by
-     * @param dest
-     *          will hold the result
-     * @return this
-     */
-    public Vector4d mul(Matrix4f mat, Vector4d dest) {
+    public Vector4f mul(Matrix4f mat, Vector4f dest) {
         if (this != dest) {
             dest.x = mat.m00 * x + mat.m10 * y + mat.m20 * z + mat.m30 * w;
             dest.y = mat.m01 * x + mat.m11 * y + mat.m21 * z + mat.m31 * w;
@@ -694,20 +486,21 @@ public class Vector4d implements Externalizable {
         } else {
             dest.set(mat.m00 * x + mat.m10 * y + mat.m20 * z + mat.m30 * w,
                      mat.m01 * x + mat.m11 * y + mat.m21 * z + mat.m31 * w,
-                     mat.m02 * x + mat.m12 * y + mat.m22 * z + mat.m32 * w, 
+                     mat.m02 * x + mat.m12 * y + mat.m22 * z + mat.m32 * w,
                      mat.m03 * x + mat.m13 * y + mat.m23 * z + mat.m33 * w);
         }
         return this;
     }
 
     /**
-     * Multiply this Vector4d by the given scalar value.
+     * Multiply all components of this {@link Vector4f} by the given scalar
+     * value.
      * 
      * @param scalar
      *          the scalar to multiply by
      * @return this
      */
-    public Vector4d mul(double scalar) {
+    public Vector4f mul(float scalar) {
         x *= scalar;
         y *= scalar;
         z *= scalar;
@@ -716,30 +509,76 @@ public class Vector4d implements Externalizable {
     }
 
     /**
-     * Multiply this Vector4d by the given scalar value and store the result in <code>dest</code>.
+     * Multiply all components of this {@link Vector4f} by the given scalar
+     * value and store the result in <code>dest</code>.
      * 
      * @param scalar
-     *              the factor to multiply by
+     *          the scalar to multiply by
      * @param dest
-     *              will hold the result
+     *          will hold the result
      * @return this
      */
-    public Vector4d mul(double scalar, Vector4d dest) {
-        x *= scalar;
-        y *= scalar;
-        z *= scalar;
-        w *= scalar;
+    public Vector4f mul(float scalar, Vector4f dest) {
+        dest.x = x * scalar;
+        dest.y = y * scalar;
+        dest.z = z * scalar;
+        dest.w = w * scalar;
         return this;
     }
 
     /**
-     * Divide this Vector4d by the given scalar value.
+     * Multiply the components of this Vector4f by the given scalar values and store the result in <code>this</code>.
+     * 
+     * @param x
+     *          the x-coordinate to multiply by
+     * @param y
+     *          the y-coordinate to multiply by
+     * @param z
+     *          the z-coordinate to multiply by
+     * @param w
+     *          the w-coordinate to multiply by
+     * @return this
+     */
+    public Vector4f mul(float x, float y, float z, float w) {
+        this.x *= x;
+        this.y *= y;
+        this.z *= z;
+        this.w *= w;
+        return this;
+    }
+
+    /**
+     * Multiply the components of this Vector4f by the given scalar values and store the result in <code>dest</code>.
+     * 
+     * @param x
+     *          the x-coordinate to multiply by
+     * @param y
+     *          the y-coordinate to multiply by
+     * @param z
+     *          the z-coordinate to multiply by
+     * @param w
+     *          the w-coordinate to multiply by
+     * @param dest
+     *          will hold the result
+     * @return this
+     */
+    public Vector4f mul(float x, float y, float z, float w, Vector4f dest) {
+        dest.x = this.x * x;
+        dest.y = this.y * y;
+        dest.z = this.z * z;
+        dest.w = this.w * w;
+        return this;
+    }
+
+    /**
+     * Divide all components of this {@link Vector4f} by the given scalar
+     * value.
      * 
      * @param scalar
      *          the scalar to divide by
      * @return this
      */
-    public Vector4d div(double scalar) {
+    public Vector4f div(float scalar) {
         x /= scalar;
         y /= scalar;
         z /= scalar;
@@ -748,47 +587,92 @@ public class Vector4d implements Externalizable {
     }
 
     /**
-     * Divide this Vector4d by the given scalar value and store the result in <code>dest</code>.
+     * Divide all components of this {@link Vector4f} by the given scalar
+     * value and store the result in <code>dest</code>.
      * 
      * @param scalar
-     *              the factor to divide by
-     * @param dest
-     *              will hold the result
-     * @return this
-     */
-    public Vector4d div(double scalar, Vector4d dest) {
-        x /= scalar;
-        y /= scalar;
-        z /= scalar;
-        w /= scalar;
-        return this;
-    }
-
-    /**
-     * Transform this vector by the given quaternion <code>quat</code> and store the result in <code>this</code>.
-     * 
-     * @see Quaterniond#transform(Vector4d)
-     * 
-     * @param quat
-     *          the quaternion to transform this vector
-     * @return this
-     */
-    public Vector4d rotate(Quaterniond quat) {
-        return rotate(quat, this);
-    }
-
-    /**
-     * Transform this vector by the given quaternion <code>quat</code> and store the result in <code>dest</code>.
-     * 
-     * @see Quaterniond#transform(Vector4d)
-     * 
-     * @param quat
-     *          the quaternion to transform this vector
+     *          the scalar to divide by
      * @param dest
      *          will hold the result
      * @return this
      */
-    public Vector4d rotate(Quaterniond quat, Vector4d dest) {
+    public Vector4f div(float scalar, Vector4f dest) {
+        dest.x = x / scalar;
+        dest.y = y / scalar;
+        dest.z = z / scalar;
+        dest.w = w / scalar;
+        return this;
+    }
+
+    /**
+     * Divide the components of this Vector4f by the given scalar values and store the result in <code>this</code>.
+     * 
+     * @param x
+     *          the x-coordinate to divide by
+     * @param y
+     *          the y-coordinate to divide by
+     * @param z
+     *          the z-coordinate to divide by
+     * @param w
+     *          the w-coordinate to divide by
+     * @return this
+     */
+    public Vector4f div(float x, float y, float z, float w) {
+        this.x /= x;
+        this.y /= y;
+        this.z /= z;
+        this.w /= w;
+        return this;
+    }
+
+    /**
+     * Divide the components of this Vector4f by the given scalar values and store the result in <code>dest</code>.
+     * 
+     * @param x
+     *          the x-coordinate to divide by
+     * @param y
+     *          the y-coordinate to divide by
+     * @param z
+     *          the z-coordinate to divide by
+     * @param w
+     *          the w-coordinate to divide by
+     * @param dest
+     *          will hold the result
+     * @return this
+     */
+    public Vector4f div(float x, float y, float z, float w, Vector4f dest) {
+        dest.x = this.x / x;
+        dest.y = this.y / y;
+        dest.z = this.z / z;
+        dest.w = this.w / w;
+        return this;
+    }
+
+    /**
+     * Rotate this vector by the given quaternion <code>quat</code> and store the result in <code>this</code>.
+     * 
+     * @see Quaternionf#transform(Vector4f)
+     * 
+     * @param quat
+     *          the quaternion to rotate this vector
+     * @return this
+     */
+    public Vector4f rotate(Quaternionf quat) {
+        return rotate(quat, this);
+    }
+
+    /**
+     * Rotate this vector by the given quaternion <code>quat</code> and store the result in <code>dest</code>.
+     * 
+     * @see Quaternionf#transform(Vector4f)
+     * 
+     * @param quat
+     *          the quaternion to rotate this vector
+     * @param dest
+     *          will hold the result
+     * @return this
+     */
+    public Vector4f rotate(Quaternionf quat, Vector4f dest) {
         quat.transform(this, dest);
         return this;
     }
@@ -798,7 +682,7 @@ public class Vector4d implements Externalizable {
      * 
      * @return the length squared
      */
-    public double lengthSquared() {
+    public float lengthSquared() {
         return x * x + y * y + z * z + w * w;
     }
 
@@ -807,8 +691,8 @@ public class Vector4d implements Externalizable {
      * 
      * @return the length
      */
-    public double length() {
-        return Math.sqrt(lengthSquared());
+    public float length() {
+        return (float) Math.sqrt(lengthSquared());
     }
 
     /**
@@ -816,8 +700,8 @@ public class Vector4d implements Externalizable {
      * 
      * @return this
      */
-    public Vector4d normalize() {
-        double d = length();
+    public Vector4f normalize() {
+        float d = length();
         x /= d;
         y /= d;
         z /= d;
@@ -832,8 +716,8 @@ public class Vector4d implements Externalizable {
      *          will hold the result
      * @return this
      */
-    public Vector4d normalize(Vector4d dest) {
-        double d = length();
+    public Vector4f normalize(Vector4f dest) {
+        float d = length();
         dest.x = x / d;
         dest.y = y / d;
         dest.z = z / d;
@@ -846,8 +730,8 @@ public class Vector4d implements Externalizable {
      * 
      * @return this
      */
-    public Vector4d normalize3() {
-        double d = Math.sqrt(x * x + y * y + z * z);
+    public Vector4f normalize3() {
+        float d = (float) Math.sqrt(x * x + y * y + z * z);
         x /= d;
         y /= d;
         z /= d;
@@ -862,8 +746,8 @@ public class Vector4d implements Externalizable {
      *          will hold the result
      * @return this
      */
-    public Vector4d normalize3(Vector4d dest) {
-        double d = Math.sqrt(x * x + y * y + z * z);
+    public Vector4f normalize3(Vector4d dest) {
+        float d = (float) Math.sqrt(x * x + y * y + z * z);
         dest.x = x / d;
         dest.y = y / d;
         dest.z = z / d;
@@ -878,8 +762,8 @@ public class Vector4d implements Externalizable {
      *          the other vector
      * @return the euclidean distance
      */
-    public double distance(Vector4d v) {
-        return Math.sqrt(
+    public float distance(Vector4f v) {
+        return (float) Math.sqrt(
                 (v.x - x) * (v.x - x)
               + (v.y - y) * (v.y - y)
               + (v.z - z) * (v.z - z)
@@ -899,8 +783,8 @@ public class Vector4d implements Externalizable {
      *            the w-coordinate of the other vector
      * @return the euclidean distance
      */
-    public double distance(double x, double y, double z, double w) {
-        return Math.sqrt(
+    public float distance(float x, float y, float z, float w) {
+        return (float) Math.sqrt(
                 (x - this.x) * (x - this.x)
               + (y - this.y) * (y - this.y)
               + (z - this.z) * (z - this.z)
@@ -908,13 +792,14 @@ public class Vector4d implements Externalizable {
     }
 
     /**
-     * Compute the dot product (inner product) of this vector and <code>v</code>.
+     * Compute the dot product (inner product) of this vector and <code>v</code>
+     * .
      * 
      * @param v
      *            the other vector
      * @return the dot product
      */
-    public double dot(Vector4d v) {
+    public float dot(Vector4f v) {
         return x * v.x + y * v.y + z * v.z + w * v.w;
     }
 
@@ -931,43 +816,41 @@ public class Vector4d implements Externalizable {
      *            the w-coordinate of the other vector
      * @return the dot product
      */
-    public double dot(double x, double y, double z, double w) {
+    public float dot(float x, float y, float z, float w) {
         return this.x * x + this.y * y + this.z * z + this.w * w;
     }
 
     /**
-     * Return the cosine of the angle between this vector and the supplied vector.
-     * <p>
-     * Use this instead of <code>Math.cos(angle(v))</code>.
+     * Return the cosine of the angle between this vector and the supplied vector. Use this instead of <code>Math.cos(angle(v))</code>.
      * 
-     * @see #angle(Vector4d)
+     * @see #angle(Vector4f)
      * 
      * @param v
      *          the other vector
      * @return the cosine of the angle
      */
-    public double angleCos(Vector4d v) {
+    public float angleCos(Vector4f v) {
         double length1 = Math.sqrt(x * x + y * y + z * z + w * w);
         double length2 = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w);
         double dot = x * v.x + y * v.y + z * v.z + w * v.w;
-        return dot / (length1 * length2);
+        return (float) (dot / (length1 * length2));
     }
 
     /**
      * Return the angle between this vector and the supplied vector.
      * 
-     * @see #angleCos(Vector4d)
+     * @see #angleCos(Vector4f)
      * 
      * @param v
      *          the other vector
      * @return the angle, in radians
      */
-    public double angle(Vector4d v) {
-        double cos = angleCos(v);
+    public float angle(Vector4f v) {
+        float cos = angleCos(v);
         // This is because sometimes cos goes above 1 or below -1 because of lost precision
         cos = Math.min(cos, 1);
         cos = Math.max(cos, -1);
-        return Math.acos(cos);
+        return (float) Math.acos(cos);
     }
 
     /**
@@ -975,11 +858,11 @@ public class Vector4d implements Externalizable {
      * 
      * @return this
      */
-    public Vector4d zero() {
-        this.x = 0.0;
-        this.y = 0.0;
-        this.z = 0.0;
-        this.w = 0.0;
+    public Vector4f zero() {
+        this.x = 0.0f;
+        this.y = 0.0f;
+        this.z = 0.0f;
+        this.w = 0.0f;
         return this;
     }
 
@@ -988,7 +871,7 @@ public class Vector4d implements Externalizable {
      * 
      * @return this
      */
-    public Vector4d negate() {
+    public Vector4f negate() {
         x = -x;
         y = -y;
         z = -z;
@@ -1003,7 +886,7 @@ public class Vector4d implements Externalizable {
      *          will hold the result
      * @return this
      */
-    public Vector4d negate(Vector4d dest) {
+    public Vector4f negate(Vector4f dest) {
         dest.x = -x;
         dest.y = -y;
         dest.z = -z;
@@ -1035,30 +918,58 @@ public class Vector4d implements Externalizable {
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeDouble(x);
-        out.writeDouble(y);
-        out.writeDouble(z);
+        out.writeFloat(x);
+        out.writeFloat(y);
+        out.writeFloat(z);
+        out.writeFloat(w);
     }
 
-    public void readExternal(ObjectInput in) throws IOException,
-            ClassNotFoundException {
-        x = in.readDouble();
-        y = in.readDouble();
-        z = in.readDouble();
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        x = in.readFloat();
+        y = in.readFloat();
+        z = in.readFloat();
+        w = in.readFloat();
+    }
+
+    /**
+     * Set the components of this vector to be the component-wise minimum of
+     * this and the other vector.
+     *
+     * @param v
+     *            the other vector
+     * @return this
+     */
+    public Vector4f min(Vector4f v) {
+        this.x = Math.min(x, v.x);
+        this.y = Math.min(y, v.y);
+        this.z = Math.min(z, v.z);
+        this.w = Math.min(w, v.w);
+        return this;
+    }
+
+    /**
+     * Set the components of this vector to be the component-wise maximum of
+     * this and the other vector.
+     *
+     * @param v
+     *            the other vector
+     * @return this
+     */
+    public Vector4f max(Vector4f v) {
+        this.x = Math.max(x, v.x);
+        this.y = Math.max(y, v.y);
+        this.z = Math.max(z, v.z);
+        this.w = Math.min(w, v.w);
+        return this;
     }
 
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        long temp;
-        temp = Double.doubleToLongBits(w);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(x);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(y);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(z);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime * result + Float.floatToIntBits(w);
+        result = prime * result + Float.floatToIntBits(x);
+        result = prime * result + Float.floatToIntBits(y);
+        result = prime * result + Float.floatToIntBits(z);
         return result;
     }
 
@@ -1069,14 +980,14 @@ public class Vector4d implements Externalizable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Vector4d other = (Vector4d) obj;
-        if (Double.doubleToLongBits(w) != Double.doubleToLongBits(other.w))
+        Vector4f other = (Vector4f) obj;
+        if (Float.floatToIntBits(w) != Float.floatToIntBits(other.w))
             return false;
-        if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x))
+        if (Float.floatToIntBits(x) != Float.floatToIntBits(other.x))
             return false;
-        if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y))
+        if (Float.floatToIntBits(y) != Float.floatToIntBits(other.y))
             return false;
-        if (Double.doubleToLongBits(z) != Double.doubleToLongBits(other.z))
+        if (Float.floatToIntBits(z) != Float.floatToIntBits(other.z))
             return false;
         return true;
     }
@@ -1094,11 +1005,11 @@ public class Vector4d implements Externalizable {
      *            will hold the result
      * @return this
      */
-    public Vector4d smoothStep(Vector4d v, double t, Vector4d dest) {
-        dest.x = Interpolate.smoothStep(x, v.x, t);
-        dest.y = Interpolate.smoothStep(y, v.y, t);
-        dest.z = Interpolate.smoothStep(x, v.z, t);
-        dest.w = Interpolate.smoothStep(w, v.w, t);
+    public Vector4f smoothStep(Vector4d v, float t, Vector4f dest) {
+        dest.x = (float) Interpolate.smoothStep(x, v.x, t);
+        dest.y = (float) Interpolate.smoothStep(y, v.y, t);
+        dest.z = (float) Interpolate.smoothStep(x, v.z, t);
+        dest.w = (float) Interpolate.smoothStep(w, v.w, t);
         return this;
     }
 
@@ -1120,12 +1031,96 @@ public class Vector4d implements Externalizable {
      *            will hold the result
      * @return this
      */
-    public Vector4d hermite(Vector4d t0, Vector4d v1, Vector4d t1, double t, Vector4d dest) {
-        dest.x = Interpolate.hermite(x, t0.x, v1.x, t1.x, t);
-        dest.y = Interpolate.hermite(y, t0.y, v1.y, t1.y, t);
-        dest.z = Interpolate.hermite(z, t0.z, v1.z, t1.z, t);
-        dest.w = Interpolate.hermite(z, t0.w, v1.w, t1.w, t);
+    public Vector4f hermite(Vector4f t0, Vector4f v1, Vector4f t1, double t, Vector4f dest) {
+        dest.x = (float) Interpolate.hermite(x, t0.x, v1.x, t1.x, t);
+        dest.y = (float) Interpolate.hermite(y, t0.y, v1.y, t1.y, t);
+        dest.z = (float) Interpolate.hermite(z, t0.z, v1.z, t1.z, t);
+        dest.w = (float) Interpolate.hermite(z, t0.w, v1.w, t1.w, t);
         return this;
+    }
+
+    /**
+     * Return the specified {@link Vector3f}.
+     * <p>
+     * When using method chaining in a fluent interface style, this method can be used to switch
+     * the <i>context object</i>, on which further method invocations operate, to be the given vector.
+     * 
+     * @param v
+     *          the {@link Vector3f} to return
+     * @return that vector
+     */
+    public Vector3f with(Vector3f v) {
+        return v;
+    }
+
+    /**
+     * Return the specified {@link Vector4f}.
+     * <p>
+     * When using method chaining in a fluent interface style, this method can be used to switch
+     * the <i>context object</i>, on which further method invocations operate, to be the given vector.
+     * 
+     * @param v
+     *          the {@link Vector4f} to return
+     * @return that vector
+     */
+    public Vector4f with(Vector4f v) {
+        return v;
+    }
+
+    /**
+     * Return the specified {@link Quaternionf}.
+     * <p>
+     * When using method chaining in a fluent interface style, this method can be used to switch
+     * the <i>context object</i>, on which further method invocations operate, to be the given quaternion.
+     * 
+     * @param q
+     *          the {@link Quaternionf} to return
+     * @return that quaternion
+     */
+    public Quaternionf with(Quaternionf q) {
+        return q;
+    }
+
+    /**
+     * Return the specified {@link AxisAngle4f}.
+     * <p>
+     * When using method chaining in a fluent interface style, this method can be used to switch
+     * the <i>context object</i>, on which further method invocations operate, to be the given {@link AxisAngle4f}.
+     * 
+     * @param a
+     *          the {@link AxisAngle4f} to return
+     * @return that quaternion
+     */
+    public AxisAngle4f with(AxisAngle4f a) {
+        return a;
+    }
+
+    /**
+     * Return the specified {@link Matrix3f}.
+     * <p>
+     * When using method chaining in a fluent interface style, this method can be used to switch
+     * the <i>context object</i>, on which further method invocations operate, to be the given matrix.
+     * 
+     * @param m
+     *          the {@link Matrix3f} to return
+     * @return that matrix
+     */
+    public Matrix3f with(Matrix3f m) {
+        return m;
+    }
+
+    /**
+     * Return the specified {@link Matrix4f}.
+     * <p>
+     * When using method chaining in a fluent interface style, this method can be used to switch
+     * the <i>context object</i>, on which further method invocations operate, to be the given matrix.
+     * 
+     * @param m
+     *          the {@link Matrix4f} to return
+     * @return that matrix
+     */
+    public Matrix4f with(Matrix4f m) {
+        return m;
     }
 
 }

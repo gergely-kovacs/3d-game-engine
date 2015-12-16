@@ -20,7 +20,7 @@
  THE SOFTWARE.
 
  */
-package utils.maths;
+package util.maths;
 
 /**
  * Provides methods to compute rays through an arbitrary perspective transformation defined by a {@link Matrix4f}.

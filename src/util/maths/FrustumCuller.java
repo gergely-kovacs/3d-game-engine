@@ -20,7 +20,7 @@
  THE SOFTWARE.
 
  */
-package utils.maths;
+package util.maths;
 
 /**
  * Performs frustum culling by caching the frustum planes of an arbitrary transformation {@link Matrix4f matrix}.

@@ -1,6 +1,6 @@
 package objects;
 
-import utils.maths.Vec3f;
+import util.maths.Vec3f;
 
 public class Face {
 	public Vec3f vertexIndices = new Vec3f();
@@ -16,15 +16,14 @@ public class Face {
 	public String toString(int vertexNumber) {
 		switch(vertexNumber) {
 		case 1:
-			return "" + this.vertexIndices.x + "/" + this.textureIndices.x + "/" + this.normalIndices.x;
+			return "" + (int) this.vertexIndices.x + "/" + (int) this.textureIndices.x + "/" + (int) this.normalIndices.x;
 		case 2:
-			return "" + this.vertexIndices.y + "/" + this.textureIndices.y + "/" + this.normalIndices.y;
+			return "" + (int) this.vertexIndices.y + "/" + (int) this.textureIndices.y + "/" + (int) this.normalIndices.y;
 		case 3:
-			return "" + this.vertexIndices.z + "/" + this.textureIndices.z + "/" + this.normalIndices.z;
+			return "" + (int) this.vertexIndices.z + "/" + (int) this.textureIndices.z + "/" + (int) this.normalIndices.z;
 		default:
-			System.out.println("Error");
-			break;
+			System.out.println("Error in converting the face to string");
+			return null;
 		}
-		return "Invalid";
 	}
 }
