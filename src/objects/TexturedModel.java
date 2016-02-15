@@ -6,7 +6,6 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import util.maths.Vec3f;
-import world.World;
 
 public class TexturedModel{
 	private Vec3f position, direction, scale;
@@ -23,9 +22,10 @@ public class TexturedModel{
 		
 		this.position = position;
 		this.direction = direction;
+		this.scale = scale;
 		
-		shineDamperUniLoc = GL20.glGetUniformLocation(World.program.getProgramId(), "shineDamper");
-		reflectivityUniLoc = GL20.glGetUniformLocation(World.program.getProgramId(), "reflectivity");
+		this.shineDamper = shineDamper;
+		this.reflectivity = reflectivity;
 	}
 	
 	public void render() {
@@ -50,6 +50,11 @@ public class TexturedModel{
 	public void specifyUniforms() {
 		GL20.glUniform1f(shineDamperUniLoc, shineDamper);
         GL20.glUniform1f(reflectivityUniLoc, reflectivity);
+	}
+	
+	public void getUniforms(int shaderProgramId) {
+		shineDamperUniLoc = GL20.glGetUniformLocation(shaderProgramId, "shineDamper");
+		reflectivityUniLoc = GL20.glGetUniformLocation(shaderProgramId, "reflectivity");
 	}
 	
 	public Vec3f getPosition() {

@@ -3,7 +3,6 @@ package objects.lights;
 import org.lwjgl.opengl.GL20;
 
 import util.maths.Vec3f;
-import world.World;
 
 public class Light {
 	protected Vec3f position;
@@ -14,9 +13,6 @@ public class Light {
 	public Light(Vec3f position, Vec3f colour) {
 		this.position = position;
 		this.colour = colour;
-		
-		posUniLoc = GL20.glGetUniformLocation(World.program.getProgramId(), "lightPosition");
-		colUniLoc = GL20.glGetUniformLocation(World.program.getProgramId(), "lightColour");
 	}
 	
 	public void specifyUniforms() {
@@ -24,8 +20,9 @@ public class Light {
         GL20.glUniform3f(colUniLoc, colour.x, colour.y, colour.z);
 	}
 	
-	public void getUniforms(int programID) {
-		
+	public void getUniforms(int shaderProgramId) {
+		posUniLoc = GL20.glGetUniformLocation(shaderProgramId, "lightPosition");
+		colUniLoc = GL20.glGetUniformLocation(shaderProgramId, "lightColour");
 	}
 
 	public Vec3f getPosition() {

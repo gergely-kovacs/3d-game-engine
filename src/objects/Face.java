@@ -13,6 +13,11 @@ public class Face {
 		this.normalIndices = normalIndices;
 	}
 	
+	public Face(Vec3f vertexIndices, Vec3f normalIndices) {
+		this.vertexIndices = vertexIndices;
+		this.normalIndices = normalIndices;
+	}
+	
 	public String toString(int vertexNumber) {
 		switch(vertexNumber) {
 		case 1:

@@ -8,31 +8,28 @@ import org.lwjgl.opengl.GL20;
 import display.DisplayManager;
 import util.maths.Matrix4f;
 import util.maths.Vec3f;
-import world.World;
 
 public class Camera {
 	private FloatBuffer matBuff;
 	private Matrix4f mMat, vMat, pMat;
 	private Vec3f position;
-	private float yaw, pitch, roll;
+	private float yaw, pitch, roll, FoV;
 	private int mMatUniLoc, vMatUniLoc, pMatUniLoc;
 	
-	public Camera(Vec3f position, float yaw, float pitch, float roll) {
+	public Camera(Vec3f position, float yaw, float pitch, float roll, float fov) {
 		this.position = position;
 		this.yaw = yaw;
 		this.pitch = pitch;
 		this.roll = roll;
+		FoV = fov;
 		
 		matBuff = BufferUtils.createFloatBuffer(16);
 		mMat = new Matrix4f();
         vMat = new Matrix4f();
         pMat = new Matrix4f();
         
-        pMat.setPerspective(3.1415926535f / 180.0f * 45.0f, (float) DisplayManager.WIDTH / (float) DisplayManager.HEIGHT, 0.015f, 100.0f);
-        
-        mMatUniLoc = GL20.glGetUniformLocation(World.program.getProgramId(), "model");
-		vMatUniLoc = GL20.glGetUniformLocation(World.program.getProgramId(), "view");
-		pMatUniLoc = GL20.glGetUniformLocation(World.program.getProgramId(), "projection");
+        pMat.setPerspective(3.1415926535f / 180.0f * FoV, (float) DisplayManager.WIDTH / (float) DisplayManager.HEIGHT, 0.015f, 1000.0f);
+        // get uniform locations
 	}
 	
 	public void specifyUniforms() {
@@ -42,6 +39,12 @@ public class Camera {
         GL20.glUniformMatrix4fv(vMatUniLoc, false, matBuff);
         mMat.get(matBuff);
         GL20.glUniformMatrix4fv(mMatUniLoc, false, matBuff);
+	}
+	
+	public void getUniforms(int shaderProgramId) {
+		mMatUniLoc = GL20.glGetUniformLocation(shaderProgramId, "model");
+		vMatUniLoc = GL20.glGetUniformLocation(shaderProgramId, "view");
+		pMatUniLoc = GL20.glGetUniformLocation(shaderProgramId, "projection");
 	}
 	
 	public void update() {
@@ -95,4 +98,12 @@ public class Camera {
 		this.roll = roll;
 	}
 	
+	public float getFov() {
+		return FoV;
+	}
+	
+	public void setFov(float fov) {
+		FoV = fov;
+	}
+
 }

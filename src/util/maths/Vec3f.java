@@ -4,6 +4,9 @@ public class Vec3f {
 	public float x, y, z;
 	
 	public Vec3f() {
+		x = 0.0f;
+		y = 0.0f;
+		z = 0.0f;
 	}
 
 	public Vec3f(float x, float y, float z) {
@@ -64,5 +67,9 @@ public class Vec3f {
 		this.x = other.x;
 		this.y = other.y;
 		this.z = other.z;
+	}
+	
+	public String toString() {
+		return "x: " + x + " y: " + y + " z: " + z;
 	}
 }
