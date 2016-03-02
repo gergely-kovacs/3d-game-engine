@@ -12,6 +12,7 @@ import world.World;
 public class CursorInput extends GLFWCursorPosCallback {
 	
 	private DoubleBuffer xBuffer, yBuffer;
+	private final float SENSITIVITY = 0.25f;
 	
 	public CursorInput() {
 		xBuffer = BufferUtils.createDoubleBuffer(1);
@@ -22,19 +23,19 @@ public class CursorInput extends GLFWCursorPosCallback {
 	public void invoke(long window, double xpos, double ypos) {
 		GLFW.glfwGetCursorPos(window, xBuffer, yBuffer);
 		
-		if (yBuffer.get(0) < 90 && yBuffer.get(0) > -90) {
-			World.camera.setPitch((float) ypos);
-		} else if (yBuffer.get(0) < -90) {
-			GLFW.glfwSetCursorPos(window, xpos, -90.0d);
-		} else if (yBuffer.get(0) > 90) {
-			GLFW.glfwSetCursorPos(window, xpos, 90.0d);
+		if (yBuffer.get(0) < 90 / SENSITIVITY && yBuffer.get(0) > -90 / SENSITIVITY) {
+			World.camera.setPitch((float) ypos * SENSITIVITY);
+		} else if (yBuffer.get(0) < -90 / SENSITIVITY) {
+			GLFW.glfwSetCursorPos(window, xpos, -90.0d / SENSITIVITY);
+		} else if (yBuffer.get(0) > 90 / SENSITIVITY) {
+			GLFW.glfwSetCursorPos(window, xpos, 90.0d / SENSITIVITY);
 		}
 		
-		if (xBuffer.get(0) < 360 && xBuffer.get(0) > -360) {
-			World.camera.setYaw((float) xpos);
-		} else if (xBuffer.get(0) < -360) {
+		if (xBuffer.get(0) < 360 / SENSITIVITY && xBuffer.get(0) > -360 / SENSITIVITY) {
+			World.camera.setYaw((float) xpos * SENSITIVITY);
+		} else if (xBuffer.get(0) < -360 / SENSITIVITY) {
 			GLFW.glfwSetCursorPos(window, -xpos % 360.0d, ypos);
-		} else if (xBuffer.get(0) > 360) {
+		} else if (xBuffer.get(0) > 360 / SENSITIVITY) {
 			GLFW.glfwSetCursorPos(window, xpos % 360.0d, ypos);
 		}
 	}

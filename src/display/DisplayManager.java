@@ -4,7 +4,9 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
@@ -15,8 +17,8 @@ import org.lwjgl.opengl.GLContext;
 
 import input.CursorInput;
 import input.KeyboardInput;
-import objects.Model;
-import objects.Texture;
+import objects.Shader;
+import objects.ShaderProgram;
 import util.ErrorHandler;
 import util.Util;
 import world.World;
@@ -29,12 +31,13 @@ public class DisplayManager {
     private GLFWErrorCallback errorCallback;
     private GLFWKeyCallback keyCallback;
     private GLFWCursorPosCallback cursorCallback;
-	
-    public Model nyusziModel;
-    public Texture nyusziDiffuse;
     
     private long window;
     
+    private Renderer entityRenderer, skyboxRenderer, terrainRenderer;
+    
+	private static double delta, deltaTracker;
+
     public void run() {
         try {
             init();
@@ -46,8 +49,7 @@ public class DisplayManager {
             errorCallback.release();
         }
         finally {
-        	World.texturedModelSp.dispose();
-        	
+        	// TODO: dispose everything
             glfwTerminate();
         }
     }
@@ -68,15 +70,15 @@ public class DisplayManager {
         ByteBuffer vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         
         glfwSetWindowPos(window,
-            (GLFWvidmode.width(vidmode) - WIDTH) / 2,
-            (GLFWvidmode.height(vidmode) - HEIGHT) / 2 );
+            (GLFWvidmode.width(vidmode) - WIDTH),
+            (GLFWvidmode.height(vidmode) - HEIGHT) / 4 );
         
         glfwMakeContextCurrent(window);
         GLContext.createFromCurrent();
         
         glfwSwapInterval(1);
         
-        GL11.glClearColor(0.0f, 0.02f, 0.025f, 1.0f);
+        GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         
         GL11.glEnable(GL11.GL_CULL_FACE);
@@ -85,43 +87,109 @@ public class DisplayManager {
         //GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
         
         World.init();
+        
+        initShaders();
     }
+    
+    private void initShaders() {
+    	int entityVs = new Shader("res/shaders/entityVs.glsl", GL20.GL_VERTEX_SHADER).getShaderId();
+        int entityFs = new Shader("res/shaders/entityFs.glsl", GL20.GL_FRAGMENT_SHADER).getShaderId();
+    	
+        ArrayList<String> entityAttribs = new ArrayList<String>();
+        entityAttribs.add("vertexPosition");
+        entityAttribs.add("texture");
+        entityAttribs.add("vertexNormal");
+    	ShaderProgram entitySp = new ShaderProgram(entityVs, entityFs, entityAttribs);
+    	entityRenderer = new Renderer(entitySp);
+    	
+    	int skyboxVs = new Shader("res/shaders/skyboxVs.glsl", GL20.GL_VERTEX_SHADER).getShaderId();
+    	int skyboxFs = new Shader("res/shaders/skyboxFs.glsl", GL20.GL_FRAGMENT_SHADER).getShaderId();
+    	
+    	ArrayList<String> skyboxAttribs = new ArrayList<String>();
+    	skyboxAttribs.add("vertexPosition");
+    	ShaderProgram skyboxSp = new ShaderProgram(skyboxVs, skyboxFs, skyboxAttribs);
+    	skyboxRenderer = new Renderer(skyboxSp);
+    	
+    	int terrainVs = new Shader("res/shaders/terrainVs.glsl", GL20.GL_VERTEX_SHADER).getShaderId();
+    	int terrainFs = new Shader("res/shaders/terrainFs.glsl", GL20.GL_FRAGMENT_SHADER).getShaderId();
+    	
+    	ArrayList<String> terrainAttribs = new ArrayList<String>();
+    	terrainAttribs.add("vertexPosition");
+    	terrainAttribs.add("texture");
+    	terrainAttribs.add("vertexNormal");
+    	ShaderProgram terrainSp = new ShaderProgram(terrainVs, terrainFs, terrainAttribs);
+    	terrainRenderer = new Renderer(terrainSp);
+	}
  
-    private void loop() {
+	private void loop() {
         while ( glfwWindowShouldClose(window) == GL11.GL_FALSE ) {
         	World.day.passTime();
         	
-            World.camera.update();
-            
+        	entityRenderer.updateCamera();
+        	skyboxRenderer.updateSkyboxCamera();
+        	terrainRenderer.updateCamera();
+        	
+        	World.nyuszi.move();
+        	
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
             
-            GL20.glUseProgram(World.texturedModelSp.getProgramId());
-            World.camera.getUniforms(World.texturedModelSp.getProgramId());
-            World.camera.specifyUniforms();
-            World.sun.getUniforms(World.texturedModelSp.getProgramId());
-            World.sun.specifyUniforms();
-            World.nyuszi.getUniforms(World.texturedModelSp.getProgramId());
-            World.nyuszi.specifyUniforms();
+            GL20.glUseProgram(entityRenderer.getProgramId());
+            entityRenderer.getUniforms();
+            entityRenderer.specifyUniforms();
             
+            World.camera.getUniforms(entityRenderer.getProgramId());
+            World.camera.specifyUniforms();
+            World.sun.getUniforms(entityRenderer.getProgramId());
+            World.sun.specifyUniforms();
+            
+            World.nyuszi.getUniforms(entityRenderer.getProgramId());
+            World.nyuszi.specifyUniforms();
             World.nyuszi.render();
+            
             GL20.glUseProgram(0);
             
-            GL20.glUseProgram(World.skyboxSp.getProgramId());
-            World.camera.getUniforms(World.skyboxSp.getProgramId());
+            GL20.glUseProgram(skyboxRenderer.getProgramId());
+            skyboxRenderer.getUniforms();
+            skyboxRenderer.specifyUniforms();
+            
+            World.camera.getUniforms(skyboxRenderer.getProgramId());
             World.camera.specifyUniforms();
-            World.sun.getUniforms(World.skyboxSp.getProgramId());
+            World.sun.getUniforms(skyboxRenderer.getProgramId());
             World.sun.specifyUniforms();
             
             World.skybox.render();
+            
+            GL20.glUseProgram(0);
+            
+            GL20.glUseProgram(terrainRenderer.getProgramId());
+            terrainRenderer.getUniforms();
+            terrainRenderer.specifyUniforms();
+            
+            World.camera.getUniforms(terrainRenderer.getProgramId());
+            World.camera.specifyUniforms();
+            World.sun.getUniforms(terrainRenderer.getProgramId());
+            World.sun.specifyUniforms();
+            
+        	World.terrain.getUniforms(terrainRenderer.getProgramId());
+        	World.terrain.specifyUniforms();
+        	World.terrain.render();
+            
             GL20.glUseProgram(0);
             
             glfwSwapBuffers(window);
             glfwPollEvents();
             
+            delta = GLFW.glfwGetTime() - deltaTracker;
+    		deltaTracker = GLFW.glfwGetTime();
+            
             Util.monitorFrameRate();
             ErrorHandler.checkForGLErrors();
         }
     }
+	
+	public static double getDelta() {
+		return delta;
+	}
     
     public static void main(String[] args) {
         new DisplayManager().run();

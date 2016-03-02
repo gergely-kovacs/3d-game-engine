@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import util.maths.Vec2f;
 import util.maths.Vec3f;
 
 public class Model {
-	private int vaoId, vboPosId, vboTexId, vboNormId, vertexCount;
+	private int vaoId, vboPosId, vboTexId, vboNormId, vboIndId, vertexCount, indicesCount;
 	
 	public Model(String filename) {
 		List<Vec3f> vertices = new ArrayList<Vec3f>();
@@ -143,6 +144,48 @@ public class Model {
         GL30.glBindVertexArray(0);
 	}
 	
+	public Model(float[] vertices, float[] textureCoords, float[] normals, int[] indices) {
+		FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
+		FloatBuffer textureBuffer = BufferUtils.createFloatBuffer(textureCoords.length);
+		FloatBuffer normalBuffer = BufferUtils.createFloatBuffer(normals.length);
+		IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
+		
+		vertexBuffer.put(vertices); vertexBuffer.flip();
+		textureBuffer.put(textureCoords); textureBuffer.flip();
+		normalBuffer.put(normals); normalBuffer.flip();
+		indicesBuffer.put(indices); indicesBuffer.flip();
+		
+		indicesCount = indices.length;
+		
+		vaoId = GL30.glGenVertexArrays();
+        GL30.glBindVertexArray(vaoId);
+        
+        vboPosId = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboPosId);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexBuffer, GL15.GL_STATIC_DRAW);
+        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        
+        vboTexId = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboTexId);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, textureBuffer, GL15.GL_STATIC_DRAW);
+        GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, 0);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        
+        vboNormId = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboNormId);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, normalBuffer, GL15.GL_STATIC_DRAW);
+        GL20.glVertexAttribPointer(2, 3, GL11.GL_FLOAT, false, 0, 0);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        
+        GL30.glBindVertexArray(0);
+        
+        vboIndId = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboIndId);
+        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL15.GL_STATIC_DRAW);
+        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
+	
 	public void dispose() {
 		GL30.glBindVertexArray(vaoId);
     	
@@ -163,20 +206,16 @@ public class Model {
 		return vaoId;
 	}
 
-	public int getVboPosId() {
-		return vboPosId;
-	}
-
-	public int getVboTexId() {
-		return vboTexId;
-	}
-
-	public int getVboNormId() {
-		return vboNormId;
-	}
-	
 	public int getVertexCount() {
 		return vertexCount;
+	}
+	
+	public int getIndicesCount() {
+		return indicesCount;
+	}
+	
+	public int getVboIndId() {
+		return vboIndId;
 	}
 	
 }

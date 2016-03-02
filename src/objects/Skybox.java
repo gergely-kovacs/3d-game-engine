@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 public class Skybox {
-	private final float SIZE = 500;
+	private final float SIZE = 50.0f;
 	private int texId, vaoId, vertexCount;
 
 	public Skybox(CubemapTexture texture) {

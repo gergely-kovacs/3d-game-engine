@@ -16,7 +16,7 @@ public class Light {
 	}
 	
 	public void specifyUniforms() {
-		GL20.glUniform3f(posUniLoc, position.x, position.y, position.z);
+		GL20.glUniform3f(posUniLoc, position.x, position.y, -position.z); // reverse the z position because in OpenGL -Z is forward
         GL20.glUniform3f(colUniLoc, colour.x, colour.y, colour.z);
 	}
 	

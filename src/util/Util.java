@@ -24,10 +24,30 @@ public class Util {
         }
     }
 	
-	public static float calcDelta(float fromValue, float toValue, float stepSize, float duration) {
+	public static float computeDelta(float fromValue, float toValue, float stepSize, float duration) {
 		int numberOfSteps = (int) (Math.abs(fromValue - toValue) / stepSize);
 		float delta = duration / numberOfSteps;
 		return delta;
+	}
+	
+	public static float cosInterp(float v1, float v2, float a) {
+		double angle = a * Math.PI;
+		float normalized = (float) (1.0f - Math.cos(angle)) * 0.5f;
+		return v1 * (1.0f - normalized) + v2 * normalized;
+	}
+	
+	public static float roundDown(float numToRound, float multiple) {
+	    if (multiple == 0)
+	        return numToRound;
+
+	    float remainder = Math.abs(numToRound) % multiple;
+	    if (remainder == 0)
+	        return numToRound;
+
+	    if (numToRound < 0)
+	        return -(Math.abs(numToRound) + multiple - remainder);
+	    else
+	        return numToRound - remainder;
 	}
 
 }

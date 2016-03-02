@@ -1,6 +1,10 @@
 package util.maths;
 
 public class Vec3f {
+	
+	public static final Vec3f NULL_VECTOR = new Vec3f(0.0f, 0.0f, 0.0f);
+	public static final Vec3f UNIT_VECTOR = new Vec3f(1.0f, 1.0f, 1.0f);
+	
 	public float x, y, z;
 	
 	public Vec3f() {
@@ -36,10 +40,24 @@ public class Vec3f {
 		return this;
 	}
 	
+	public Vec3f add(float x, float y, float z) {
+		this.x += x;
+		this.y += y;
+		this.z += z;
+		return this;
+	}
+	
 	public Vec3f subtract(Vec3f other) {
 		x -= other.x;
 		y -= other.y;
 		z -= other.z;
+		return this;
+	}
+	
+	public Vec3f mult(float multiplier) {
+		x *= multiplier;
+		y *= multiplier;
+		z *= multiplier;
 		return this;
 	}
 	
