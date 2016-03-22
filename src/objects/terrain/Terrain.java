@@ -13,7 +13,7 @@ import org.lwjgl.opengl.GL30;
 import objects.Model;
 import objects.Texture;
 import util.Util;
-import util.maths.Matrix4f;
+import util.maths.Mat4f;
 import util.maths.Vec3f;
 
 public class Terrain {
@@ -27,7 +27,7 @@ public class Terrain {
 	private Model model;
 	
 	private FloatBuffer matBuff;
-	private Matrix4f mMat;
+	private Mat4f mMat;
 	
 	private int mMatUniLoc, texId, seed;
 	
@@ -69,7 +69,7 @@ public class Terrain {
 		texId = texture.getId();
 		
 		matBuff = BufferUtils.createFloatBuffer(16);
-		mMat = new Matrix4f();
+		mMat = new Mat4f();
 		
 		mMat.translate(-SIZE/2, 0, -SIZE/2);
 	}
@@ -149,7 +149,7 @@ public class Terrain {
 	}
 
 	public void specifyUniforms() {
-		mMat.get(matBuff);
+		mMat.store(matBuff);
         GL20.glUniformMatrix4fv(mMatUniLoc, false, matBuff);
 	}
 	

@@ -8,12 +8,12 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import util.maths.Matrix4f;
+import util.maths.Mat4f;
 import util.maths.Vec3f;
 
 public class Entity{
 	protected FloatBuffer matBuff;
-	protected Matrix4f mMat;
+	protected Mat4f mMat;
 	protected Vec3f position, direction, scale;
 	protected float shineDamper, reflectivity;
 	protected int texId, vaoId, vertexCount, mMatUniLoc,
@@ -32,13 +32,13 @@ public class Entity{
 		this.scale = scale;
 		
 		matBuff = BufferUtils.createFloatBuffer(16);
-		mMat = new Matrix4f();
+		mMat = new Mat4f();
 		
-		mMat.scale(scale.x, scale.y, scale.z);
-		mMat.rotateX(3.1415926535f / 180f * direction.x);
-		mMat.rotateY(3.1415926535f / 180f * direction.y);
-		mMat.rotateZ(3.1415926535f / 180f * direction.z);
-		mMat.translate(position.x, position.y, position.z);
+		mMat.scale(scale);
+		mMat.rotateX((float) Math.toRadians(direction.x));
+		mMat.rotateY((float) Math.toRadians(direction.y));
+		mMat.rotateZ((float) Math.toRadians(direction.z));
+		mMat.translate(position);
 		
 		this.shineDamper = shineDamper;
 		this.reflectivity = reflectivity;
@@ -64,7 +64,7 @@ public class Entity{
 	}
 	
 	public void specifyUniforms() {
-		mMat.get(matBuff);
+		mMat.store(matBuff);
         GL20.glUniformMatrix4fv(mMatUniLoc, false, matBuff);
 		GL20.glUniform1f(shineDamperUniLoc, shineDamper);
         GL20.glUniform1f(reflectivityUniLoc, reflectivity);

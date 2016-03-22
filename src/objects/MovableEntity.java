@@ -24,11 +24,11 @@ public class MovableEntity extends Entity {
 			position.y = World.terrain.getHeight(position.x, position.z);
 		}
 		
-		mMat.identity();
-		mMat.scale(scale.x, scale.y, scale.z);
-		mMat.rotateX(3.1415926535f / 180f * direction.x);
-		mMat.rotateY(3.1415926535f / 180f * direction.y);
-		mMat.rotateZ(3.1415926535f / 180f * direction.z);
-		mMat.translate(position.x, position.y, position.z);
+		mMat.loadIdentity();
+		mMat.scale(scale);
+		mMat.rotateX((float) Math.toRadians(direction.x));
+		mMat.rotateY((float) Math.toRadians(direction.y));
+		mMat.rotateZ((float) Math.toRadians(direction.z));
+		mMat.translate(position);
 	}
 }

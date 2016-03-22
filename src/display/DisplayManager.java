@@ -70,8 +70,8 @@ public class DisplayManager {
         ByteBuffer vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         
         glfwSetWindowPos(window,
-            (GLFWvidmode.width(vidmode) - WIDTH),
-            (GLFWvidmode.height(vidmode) - HEIGHT) / 4 );
+            (GLFWvidmode.width(vidmode) - WIDTH) / 2,
+            (GLFWvidmode.height(vidmode) - HEIGHT) / 2 );
         
         glfwMakeContextCurrent(window);
         GLContext.createFromCurrent();

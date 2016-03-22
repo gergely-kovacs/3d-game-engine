@@ -5,6 +5,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.opengl.GL11;
 
+import util.maths.Vec3f;
 import world.World;
 
 public class KeyboardInput extends GLFWKeyCallback {
@@ -18,6 +19,14 @@ public class KeyboardInput extends GLFWKeyCallback {
                 case GLFW_KEY_ESCAPE:
                 	glfwSetWindowShouldClose(window, GL11.GL_TRUE);
                 	break;
+                	
+                case GLFW_KEY_KP_ADD:
+                	World.nyuszi.setScale(World.nyuszi.getScale().add(Vec3f.UNIT_VECTOR));
+                	break;
+                case GLFW_KEY_KP_SUBTRACT:
+                	World.nyuszi.setScale(World.nyuszi.getScale().subtract(Vec3f.UNIT_VECTOR));
+                	break;
+                	
                 	
                 case GLFW_KEY_KP_5:
                 	glfwSetCursorPos(window, 0, 0);

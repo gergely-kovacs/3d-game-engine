@@ -12,7 +12,7 @@ public class Mat4f {
 		loadIdentity();
 	}
 	
-	public void store(FloatBuffer buffer) {
+	public Mat4f store(FloatBuffer buffer) {
 		buffer.put(m00);
 		buffer.put(m01);
 		buffer.put(m02);
@@ -34,39 +34,39 @@ public class Mat4f {
 		buffer.put(m33);
 		
 		buffer.flip();
+		
+		return this;
 	}
 	
-	public void loadIdentity() {
-		m00 = 1f; m10 = 0f; m20 = 0f; m30 = 0f;
-		m01 = 0f; m11 = 1f; m21 = 0f; m31 = 0f;
-		m02 = 0f; m12 = 0f; m22 = 1f; m32 = 0f;
-		m03 = 0f; m13 = 0f; m23 = 0f; m33 = 1f;
+	public Mat4f loadIdentity() {
+		m00 = 1.0f; m10 = 0.0f; m20 = 0.0f; m30 = 0.0f;
+		m01 = 0.0f; m11 = 1.0f; m21 = 0.0f; m31 = 0.0f;
+		m02 = 0.0f; m12 = 0.0f; m22 = 1.0f; m32 = 0.0f;
+		m03 = 0.0f; m13 = 0.0f; m23 = 0.0f; m33 = 1.0f;
+		return this;
 	}
 	
-	public void loadPerspective(int fov, float ratio, float near, float far) {
-		m11 = (float) (1 / (Math.tan(Math.toRadians(fov / 2))));
+	public Mat4f loadPerspective(float fov, float ratio, float near, float far) {
+		m11 = (float) (1.0f / (Math.tan(fov / 2.0f)));
 		m00 = m11 / ratio;
 		m22 = -(far + near) / (far - near);
-		m23 = -1f;
-		m32 = -2f * far * near / (far - near);
-		m33 = 0;
-	}
-	
-	public void loadLookAt(Vec3f eye, Vec3f target, Vec3f up) {
-		Vec3f zaxis = eye.subtract(target).normalize();
-		Vec3f xaxis = up.cross(zaxis).normalize();
-		Vec3f yaxis = zaxis.cross(xaxis);
-		
-		m00 = xaxis.x; m10 = yaxis.x; m20 = zaxis.x;
-		m01 = xaxis.y; m11 = yaxis.y; m21 = zaxis.y;
-		m02 = xaxis.z; m12 = yaxis.z; m22 = zaxis.z;
-		m03 = -xaxis.dot(eye); m13 = -yaxis.dot(eye); m23 = -zaxis.dot(eye);
+		m23 = -1.0f;
+		m32 = -2.0f * far * near / (far - near);
+		m33 = 0.0f;
+		return this;
 	}
 	
 	public Mat4f translate(Vec3f vec) {
 		m30 = vec.x;
 		m31 = vec.y;
 		m32 = vec.z;
+		return this;
+	}
+	
+	public Mat4f translate(float x, float y, float z) {
+		m30 = x;
+		m31 = y;
+		m32 = z;
 		return this;
 	}
 	
@@ -78,7 +78,6 @@ public class Mat4f {
 	}
 	
 	public Mat4f rotateX(float x) {
-		x = (float) Math.toRadians(x);
 		m11 = (float) Math.cos(x);
 		m12 = (float) Math.sin(x);
 		m21 = (float) -(Math.sin(x));
@@ -87,7 +86,6 @@ public class Mat4f {
 	}
 	
 	public Mat4f rotateY(float y) {
-		y = (float) Math.toRadians(y);
 		m00 = (float) Math.cos(y);
 		m02 = (float) -(Math.sin(y));
 		m20 = (float) Math.sin(y);
@@ -96,7 +94,6 @@ public class Mat4f {
 	}
 
 	public Mat4f rotateZ(float z) {
-		z = (float) Math.toRadians(z);
 		m00 = (float) Math.cos(z);
 		m01 = (float) Math.sin(z);
 		m10 = (float) -(Math.sin(z));
@@ -104,24 +101,25 @@ public class Mat4f {
 		return this;
 	}
 	
-	public Mat4f mult(Mat4f other) {
-		Mat4f product = new Mat4f();
-		product.m00 = m00 * other.m00 + m10 * other.m01 + m20 * other.m02;
-		product.m01 = m01 * other.m00 + m11 * other.m01 + m21 * other.m02;
-		product.m02 = m02 * other.m00 + m12 * other.m01 + m22 * other.m02;
-		product.m03 = m03 * other.m00 + m13 * other.m01 + m23 * other.m02;
-		product.m10 = m00 * other.m10 + m10 * other.m11 + m20 * other.m12;
-		product.m11 = m01 * other.m10 + m11 * other.m11 + m21 * other.m12;
-		product.m12 = m02 * other.m10 + m12 * other.m11 + m22 * other.m12;
-		product.m13 = m03 * other.m10 + m13 * other.m11 + m23 * other.m12;
-		product.m20 = m00 * other.m20 + m10 * other.m21 + m20 * other.m22;
-		product.m21 = m01 * other.m20 + m11 * other.m21 + m21 * other.m22;
-		product.m22 = m02 * other.m20 + m12 * other.m21 + m22 * other.m22;
-		product.m23 = m03 * other.m20 + m13 * other.m21 + m23 * other.m22;
-		product.m30 = m00 * other.m30 + m10 * other.m31 + m20 * other.m32 + m30;
-		product.m31 = m01 * other.m30 + m11 * other.m31 + m21 * other.m32 + m31;
-		product.m32 = m02 * other.m30 + m12 * other.m31 + m22 * other.m32 + m32;
-		product.m33 = m03 * other.m30 + m13 * other.m31 + m23 * other.m32 + m33;
-		return product;
-	}
 }
+
+/*public Mat4f mult(Mat4f other) {
+Mat4f product = new Mat4f();
+product.m00 = m00 * other.m00 + m10 * other.m01 + m20 * other.m02;
+product.m01 = m01 * other.m00 + m11 * other.m01 + m21 * other.m02;
+product.m02 = m02 * other.m00 + m12 * other.m01 + m22 * other.m02;
+product.m03 = m03 * other.m00 + m13 * other.m01 + m23 * other.m02;
+product.m10 = m00 * other.m10 + m10 * other.m11 + m20 * other.m12;
+product.m11 = m01 * other.m10 + m11 * other.m11 + m21 * other.m12;
+product.m12 = m02 * other.m10 + m12 * other.m11 + m22 * other.m12;
+product.m13 = m03 * other.m10 + m13 * other.m11 + m23 * other.m12;
+product.m20 = m00 * other.m20 + m10 * other.m21 + m20 * other.m22;
+product.m21 = m01 * other.m20 + m11 * other.m21 + m21 * other.m22;
+product.m22 = m02 * other.m20 + m12 * other.m21 + m22 * other.m22;
+product.m23 = m03 * other.m20 + m13 * other.m21 + m23 * other.m22;
+product.m30 = m00 * other.m30 + m10 * other.m31 + m20 * other.m32 + m30;
+product.m31 = m01 * other.m30 + m11 * other.m31 + m21 * other.m32 + m31;
+product.m32 = m02 * other.m30 + m12 * other.m31 + m22 * other.m32 + m32;
+product.m33 = m03 * other.m30 + m13 * other.m31 + m23 * other.m32 + m33;
+return product;
+}*/

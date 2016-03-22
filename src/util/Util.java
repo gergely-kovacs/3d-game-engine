@@ -16,13 +16,13 @@ public class Util {
     }
 	
 	public static void monitorProcessingTime() {
-        frameCount++;
-        if (glfwGetTime() - lastTime >= 1.0d) {
-        	System.out.println(1000.0d / (double) frameCount); // TODO: render using bitmap font
-        	lastTime = glfwGetTime();
-        	frameCount = 0;
-        }
-    }
+	    frameCount++;
+	    if (glfwGetTime() - lastTime >= 1.0d) {
+	    	System.out.println(1000.0d / (double) frameCount); // TODO: render using bitmap font
+	    	lastTime = glfwGetTime();
+	    	frameCount = 0;
+	    }
+	}
 	
 	public static float computeDelta(float fromValue, float toValue, float stepSize, float duration) {
 		int numberOfSteps = (int) (Math.abs(fromValue - toValue) / stepSize);

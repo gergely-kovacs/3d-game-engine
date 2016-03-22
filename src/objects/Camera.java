@@ -6,12 +6,12 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
 
 import display.DisplayManager;
-import util.maths.Matrix4f;
+import util.maths.Mat4f;
 import util.maths.Vec3f;
 
 public class Camera {
 	private FloatBuffer matBuff;
-	private Matrix4f pMat;
+	private Mat4f pMat;
 	private Vec3f position;
 	private float yaw, pitch, roll;
 	private int pMatUniLoc;
@@ -23,13 +23,13 @@ public class Camera {
 		this.roll = roll;
 		
 		matBuff = BufferUtils.createFloatBuffer(16);
-        pMat = new Matrix4f();
+		pMat = new Mat4f();
         
-        pMat.setPerspective(3.1415926535f / 180.0f * fov, (float) DisplayManager.WIDTH / (float) DisplayManager.HEIGHT, 0.1f, 100.0f);
+        pMat.loadPerspective((float) Math.toRadians(fov), (float) DisplayManager.WIDTH / (float) DisplayManager.HEIGHT, 0.1f, 100.0f);
 	}
 	
 	public void specifyUniforms() {
-		pMat.get(matBuff);
+		pMat.store(matBuff);
         GL20.glUniformMatrix4fv(pMatUniLoc, false, matBuff);
 	}
 	
