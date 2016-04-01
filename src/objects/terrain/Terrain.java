@@ -18,10 +18,10 @@ import util.maths.Vec3f;
 
 public class Terrain {
 
-	private static final float AMPLITUDE = 40.0f;
-	private static final float SMOOTHING = 6.0f;
-	public static final float SIZE = 20.0f;
-	public static final int GRID_COUNT = 40;
+	private static final float AMPLITUDE = 8.0f;
+	private static final float SMOOTHING = 2.0f;
+	public static final float SIZE = 100.0f;
+	public static final int GRID_COUNT = 100;
 	public static final float GRID_SIZE = SIZE / GRID_COUNT;
 	
 	private Model model;
@@ -42,12 +42,12 @@ public class Terrain {
 		float[] textureCoords = new float[vertexCount * 2];
 		int[] indices = new int[GRID_COUNT * GRID_COUNT * 6];
 		for (int i = 0; i < vertexCount; i++) {
-			vertices[i*3] = i % (GRID_COUNT + 1) * GRID_SIZE;
-			vertices[i*3+2] = (float) Math.floor(i % vertexCount / (GRID_COUNT + 1)) * GRID_SIZE;
-			vertices[i*3+1] = getHeight(-vertices[i*3] + SIZE/2, -vertices[i*3+2] + SIZE/2); // theoretically x should be vertices[i*3] - SIZE/2
+			vertices[i*3] = -SIZE/2 + (i % (GRID_COUNT + 1) * GRID_SIZE);
+			vertices[i*3+2] = -SIZE/2 + ((float) Math.floor(i % vertexCount / (GRID_COUNT + 1)) * GRID_SIZE);
+			vertices[i*3+1] = getHeight(vertices[i*3], vertices[i*3+2]);
 			textureCoords[i*2] = (float) i % (GRID_COUNT + 1) / GRID_COUNT;
 			textureCoords[i*2+1] = (float) Math.floor(i % vertexCount / (GRID_COUNT + 1)) / GRID_COUNT;
-			Vec3f normal = computeNormal(-vertices[i*3] + SIZE/2, -vertices[i*3+2] + SIZE/2);
+			Vec3f normal = computeNormal(vertices[i*3], vertices[i*3+2]);
 			normals[i*3] = normal.x;
 			normals[i*3+1] = normal.y;
 			normals[i*3+2] = normal.z;
@@ -65,13 +65,11 @@ public class Terrain {
 			}
 		}
 		model = new Model(vertices, textureCoords, normals, indices);
-		Texture texture = new Texture("res/textures/grass_leaves_dry.png", GL13.GL_TEXTURE0);
+		Texture texture = new Texture("res/textures/Sand_3_Diffuse.png", GL13.GL_TEXTURE0);
 		texId = texture.getId();
 		
 		matBuff = BufferUtils.createFloatBuffer(16);
 		mMat = new Mat4f();
-		
-		mMat.translate(-SIZE/2, 0, -SIZE/2);
 	}
 	
 	public void render() {
@@ -96,14 +94,14 @@ public class Terrain {
 	}
 	
 	public float getHeight(float x, float z) {
-		float height = getInterpolatedNoise(x / 9.0f, z / 9.0f) * AMPLITUDE / (SMOOTHING);
+		float height = getInterpolatedNoise(x / 9.0f, z / 9.0f) * AMPLITUDE / (SMOOTHING * 1);
 		height += getInterpolatedNoise(x / 3.0f, z / 3.0f) * AMPLITUDE / (SMOOTHING * 2);
 		height += getInterpolatedNoise(x / 1.0f, z / 1.0f) * AMPLITUDE / (SMOOTHING * 4);
 		return height;
 	}
 	
 	private float getNoise(float x, float z) {
-		randGen.setSeed((long) (x * 15731 + z * 23041 + seed));
+		randGen.setSeed((long) (x * 84419 + z * 13767 + seed));
 		return randGen.nextFloat() * 2.0f - 1.0f;
 	}
 	

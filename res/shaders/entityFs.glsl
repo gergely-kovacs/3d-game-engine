@@ -20,8 +20,8 @@ void main() {
 	vec3 unitToCamera = normalize(toCamera);
 	
 	float brightness = dot(unitNormal, unitToLight); // TODO: fix ambient light (if light colour is 0, then diffuse colour is 0, regardless of brightness)
-	brightness = max(brightness, 0.1);
-	vec3 diffuse = brightness * lightColour * 0.8;
+	brightness = max(brightness, 0.2);
+	vec3 diffuse = brightness * lightColour;
 	
 	vec3 lightDirection = -unitToLight;
 	vec3 reflectedLightDirection = reflect(lightDirection, unitNormal);

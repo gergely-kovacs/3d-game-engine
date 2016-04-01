@@ -2,13 +2,13 @@ package world;
 
 import org.lwjgl.opengl.GL13;
 
-import objects.Camera;
+import display.rendering.Camera;
 import objects.CubemapTexture;
 import objects.Model;
-import objects.MovableEntity;
-import objects.Skybox;
 import objects.Texture;
-import objects.lights.DiffuseLight;
+import objects.entities.MovableEntity;
+import objects.lights.ModelledLightSource;
+import objects.skybox.Skybox;
 import objects.terrain.Terrain;
 import util.maths.Vec3f;
 
@@ -18,21 +18,23 @@ public class World {
 	
 	public static TimeManager day;
 	public static Camera camera;
-    public static DiffuseLight sun;
-    public static MovableEntity nyuszi;
+    public static ModelledLightSource sun;
+    public static MovableEntity nyuszi, nyuszi2;
     public static Skybox skybox;
     public static Terrain terrain;
 	
 	public static void init() {
-        camera = new Camera(new Vec3f(0.0f, 5.0f, 5.0f), 0.0f, 0.0f, 0.0f, 45.0f);
+        camera = new Camera(new Vec3f(0.0f, 5.0f, 10.0f), 0.0f, 0.0f, 0.0f, 45.0f);
         
-        sun = new DiffuseLight(new Vec3f(0.0f, 0.0f, 0.0f), new Vec3f(0.0f, 0.0f, 0.0f)); // TODO: give diffuse lights a model and texture?
+        sun = new ModelledLightSource(new Model("res/models/sun.obj"),
+        		new Texture("res/textures/sun.png", GL13.GL_TEXTURE0),
+        		new Vec3f(0.0f, 0.0f, 0.0f), new Vec3f(0.0f, 0.0f, 0.0f));
         
         day = new TimeManager(72.0f);
     	
     	nyuszi = new MovableEntity(new Model("res/models/bunny3.obj"),
 			new Texture("res/textures/bunny_diffuse.png", GL13.GL_TEXTURE0),
-			new Vec3f(0f, 0.5f, 0.0f), new Vec3f(0.0f, 180.0f, 0.0f), Vec3f.UNIT_VECTOR,
+			new Vec3f(0f, 0.0f, 0.0f), Vec3f.NULL_VECTOR, Vec3f.UNIT_VECTOR,
 			5f, 0.05f);
     	
     	String[] cubeMapTextureFiles = new String[6];

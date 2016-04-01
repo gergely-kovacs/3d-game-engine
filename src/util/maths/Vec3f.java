@@ -47,13 +47,6 @@ public class Vec3f {
 		return this;
 	}
 	
-	public Vec3f subtract(Vec3f other) {
-		x -= other.x;
-		y -= other.y;
-		z -= other.z;
-		return this;
-	}
-	
 	public Vec3f mult(float multiplier) {
 		x *= multiplier;
 		y *= multiplier;

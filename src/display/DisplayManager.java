@@ -7,34 +7,31 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
 
+import display.rendering.Renderer;
+import display.rendering.Shader;
+import display.rendering.ShaderProgram;
 import input.CursorInput;
 import input.KeyboardInput;
-import objects.Shader;
-import objects.ShaderProgram;
 import util.ErrorHandler;
 import util.Util;
 import world.World;
  
 public class DisplayManager {
 	public static final int WIDTH = 1280, HEIGHT = 720;
-	
+	public static long window;
     private final String TITLE = "Szakdolgozat";
     
-    private GLFWErrorCallback errorCallback;
-    private GLFWKeyCallback keyCallback;
-    private GLFWCursorPosCallback cursorCallback;
+    private ErrorHandler errorCallback;
+    private KeyboardInput keyCallback;
+    private CursorInput cursorCallback;
     
-    private long window;
-    
-    private Renderer entityRenderer, skyboxRenderer, terrainRenderer;
+    private Renderer entityRenderer, skyboxRenderer, terrainRenderer,
+    	lightRenderer;
     
 	private static double delta, deltaTracker;
 
@@ -49,7 +46,7 @@ public class DisplayManager {
             errorCallback.release();
         }
         finally {
-        	// TODO: dispose everything
+        	// TODO: dispose of everything
             glfwTerminate();
         }
     }
@@ -119,6 +116,15 @@ public class DisplayManager {
     	terrainAttribs.add("vertexNormal");
     	ShaderProgram terrainSp = new ShaderProgram(terrainVs, terrainFs, terrainAttribs);
     	terrainRenderer = new Renderer(terrainSp);
+    	
+    	int lightVs = new Shader("res/shaders/lightVs.glsl", GL20.GL_VERTEX_SHADER).getShaderId();
+    	int lightFs = new Shader("res/shaders/lightFs.glsl", GL20.GL_FRAGMENT_SHADER).getShaderId();
+    	
+    	ArrayList<String> lightAttribs = new ArrayList<String>();
+    	terrainAttribs.add("vertexPosition");
+    	terrainAttribs.add("in_TextureCoords");
+    	ShaderProgram lightSp = new ShaderProgram(lightVs, lightFs, lightAttribs);
+    	lightRenderer = new Renderer(lightSp);
 	}
  
 	private void loop() {
@@ -128,6 +134,7 @@ public class DisplayManager {
         	entityRenderer.updateCamera();
         	skyboxRenderer.updateSkyboxCamera();
         	terrainRenderer.updateCamera();
+        	lightRenderer.updateCamera();
         	
         	World.nyuszi.move();
         	
@@ -176,8 +183,24 @@ public class DisplayManager {
             
             GL20.glUseProgram(0);
             
+            GL20.glUseProgram(lightRenderer.getProgramId());
+            lightRenderer.getUniforms();
+            lightRenderer.specifyUniforms();
+            
+            World.camera.getUniforms(lightRenderer.getProgramId());
+            World.camera.specifyUniforms();
+            World.sun.getUniforms(lightRenderer.getProgramId());
+            World.sun.specifyUniforms();
+            
+        	World.sun.getUniforms(lightRenderer.getProgramId());
+        	World.sun.specifyUniforms();
+        	World.sun.render();
+            
+            GL20.glUseProgram(0);
+            
             glfwSwapBuffers(window);
             glfwPollEvents();
+            keyCallback.update();
             
             delta = GLFW.glfwGetTime() - deltaTracker;
     		deltaTracker = GLFW.glfwGetTime();

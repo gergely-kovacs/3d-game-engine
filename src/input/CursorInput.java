@@ -12,7 +12,7 @@ import world.World;
 public class CursorInput extends GLFWCursorPosCallback {
 	
 	private DoubleBuffer xBuffer, yBuffer;
-	private final float SENSITIVITY = 0.25f;
+	private final float SENSITIVITY = 0.2f;
 	
 	public CursorInput() {
 		xBuffer = BufferUtils.createDoubleBuffer(1);

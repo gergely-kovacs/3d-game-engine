@@ -2,8 +2,8 @@ package world;
 
 import org.lwjgl.glfw.GLFW;
 
-import objects.lights.DiffuseLight;
-import util.Interpolator;
+import objects.lights.ModelledLightSource;
+import util.maths.Interpolator;
 
 public class TimeManager {
 	private final float DAWN_LENGTH, DUSK_LENGTH, MORNING_LENGTH, AFTERNOON_LENGTH,
@@ -38,26 +38,28 @@ public class TimeManager {
 		
 		if (isMorningTime()) {
 			World.sun.setPosition(
-				posMorningToNoon.lerp(DiffuseLight.SUN_INITIAL_POSITION, DiffuseLight.SUN_NOON_POSITION, MORNING_LENGTH));
+				posMorningToNoon.lerp(ModelledLightSource.SUN_INITIAL_POSITION, ModelledLightSource.SUN_NOON_POSITION, MORNING_LENGTH));
 			if (isDawnTime()) {
 				World.sun.setColour(
-					colNightToDawn.lerp(DiffuseLight.SUN_INITIAL_COLOR, DiffuseLight.SUN_DAWN_COLOR, DAWN_LENGTH)); }
+					colNightToDawn.lerp(ModelledLightSource.SUN_INITIAL_COLOR, ModelledLightSource.SUN_DAWN_COLOR, DAWN_LENGTH)); }
 			else {
 				World.sun.setColour(
-					colDawnToNoon.lerp(DiffuseLight.SUN_DAWN_COLOR, DiffuseLight.SUN_NOON_COLOR, MORNING_LENGTH - DAWN_LENGTH)); }
+					colDawnToNoon.lerp(ModelledLightSource.SUN_DAWN_COLOR, ModelledLightSource.SUN_NOON_COLOR, MORNING_LENGTH - DAWN_LENGTH)); }
 		} else if (isAfternoonTime()) {
 			World.sun.setPosition(
-				posNoonToAfternoon.lerp(DiffuseLight.SUN_NOON_POSITION, DiffuseLight.SUN_FINAL_POSITION, AFTERNOON_LENGTH));
+				posNoonToAfternoon.lerp(ModelledLightSource.SUN_NOON_POSITION, ModelledLightSource.SUN_FINAL_POSITION, AFTERNOON_LENGTH));
 			if (isDuskTime()) {
 				World.sun.setColour(
-					colDuskToNight.lerp(DiffuseLight.SUN_DUSK_COLOR, DiffuseLight.SUN_FINAL_COLOR, DUSK_LENGTH)); }
+					colDuskToNight.lerp(ModelledLightSource.SUN_DUSK_COLOR, ModelledLightSource.SUN_FINAL_COLOR, DUSK_LENGTH)); }
 			else {
 				World.sun.setColour(
-					colNoonToDusk.lerp(DiffuseLight.SUN_NOON_COLOR, DiffuseLight.SUN_DUSK_COLOR, AFTERNOON_LENGTH - DUSK_LENGTH)); }
+					colNoonToDusk.lerp(ModelledLightSource.SUN_NOON_COLOR, ModelledLightSource.SUN_DUSK_COLOR, AFTERNOON_LENGTH - DUSK_LENGTH)); }
 		} else if (isOver()) {
 			first = true;
 			resetLerps();
 		}
+		
+		World.sun.transform();
 	}
 	
 	private void resetLerps() {
