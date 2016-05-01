@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL30;
 import objects.CubemapTexture;
 
 public class Skybox {
-	private final float SIZE = 50.0f;
+	private final float SIZE = 500.0f;
 	private int texId, vaoId, vertexCount;
 
 	public Skybox(CubemapTexture texture) {
@@ -79,6 +79,8 @@ public class Skybox {
 	}
 	
 	public void render() {
+		GL11.glDepthMask(false);
+		
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, texId);
 		
@@ -90,6 +92,8 @@ public class Skybox {
         GL20.glDisableVertexAttribArray(0);
         GL30.glBindVertexArray(0);
         
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, 0);
+        
+        GL11.glDepthMask(true);
 	}
 }

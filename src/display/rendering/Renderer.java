@@ -47,7 +47,7 @@ public class Renderer {
 		vMat.loadIdentity();
         vMat.rotateX(World.camera.getPitch());
         vMat.rotateY(World.camera.getYaw());
-        vMat.translate(0.0f, -position.y, 0.0f);
+        vMat.translate(-position.x/12.0f, -position.y/12.0f, -position.z/12.0f);
 	}
 	
 	public int getProgramId() {

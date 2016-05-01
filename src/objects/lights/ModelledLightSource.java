@@ -15,9 +15,9 @@ import util.maths.Vec3f;
 
 public class ModelledLightSource extends LightSource{
 	public static final Vec3f
-			SUN_INITIAL_POSITION = new Vec3f(-49.0f, 35.0f, -15.0f),
-			SUN_NOON_POSITION = new Vec3f(0.0f, 49.0f, -15.0f),
-			SUN_FINAL_POSITION = new Vec3f(49.0f, 35.0f, -15.0f),
+			SUN_INITIAL_POSITION = new Vec3f(-490.0f, 0.0f, -15.0f),
+			SUN_NOON_POSITION = new Vec3f(0.0f, 490.0f, -15.0f),
+			SUN_FINAL_POSITION = new Vec3f(490.0f, 0.0f, -15.0f),
 			
 			SUN_INITIAL_COLOR = new Vec3f(0.7f, 0.65f, 0.5f),
 			SUN_DAWN_COLOR = new Vec3f(0.75f, 0.7f, 0.55f),
@@ -41,7 +41,7 @@ public class ModelledLightSource extends LightSource{
 		matBuff = BufferUtils.createFloatBuffer(16);
 		mMat = new Mat4f();
 		
-		scale = new Vec3f(3.0f, 3.0f, 3.0f);
+		scale = new Vec3f(8.0f, 8.0f, 8.0f);
 		
 		transform();
 	}

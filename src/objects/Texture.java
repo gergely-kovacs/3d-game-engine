@@ -47,6 +47,7 @@ public class Texture {
          
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, tWidth, tHeight, 0, 
                 GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buf);
+        
         GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
          
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
@@ -62,10 +63,6 @@ public class Texture {
 	
 	public int getId() {
 		return texId;
-	}
-	
-	public int getTextureUnit() {
-		return textureUnit;
 	}
 	
 	public void dispose() {

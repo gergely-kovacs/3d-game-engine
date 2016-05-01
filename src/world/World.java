@@ -35,7 +35,7 @@ public class World {
     	nyuszi = new MovableEntity(new Model("res/models/bunny3.obj"),
 			new Texture("res/textures/bunny_diffuse.png", GL13.GL_TEXTURE0),
 			new Vec3f(0f, 0.0f, 0.0f), Vec3f.NULL_VECTOR, Vec3f.UNIT_VECTOR,
-			5f, 0.05f);
+			1.0f, 0.2f);
     	
     	String[] cubeMapTextureFiles = new String[6];
     	cubeMapTextureFiles[0] = "res/textures/skybox/right.png";

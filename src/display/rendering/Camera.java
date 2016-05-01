@@ -25,7 +25,7 @@ public class Camera {
 		matBuff = BufferUtils.createFloatBuffer(16);
 		pMat = new Mat4f();
         
-        pMat.loadPerspective(fov, (float) DisplayManager.WIDTH / (float) DisplayManager.HEIGHT, 0.1f, 100.0f);
+        pMat.loadPerspective(fov, (float) DisplayManager.WIDTH / (float) DisplayManager.HEIGHT, 0.1f, 1000.0f);
 	}
 	
 	public void specifyUniforms() {

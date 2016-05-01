@@ -73,9 +73,10 @@ public class DisplayManager {
         glfwMakeContextCurrent(window);
         GLContext.createFromCurrent();
         
-        glfwSwapInterval(1);
+        glfwSwapInterval(0);
         
         GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         
         GL11.glEnable(GL11.GL_CULL_FACE);
