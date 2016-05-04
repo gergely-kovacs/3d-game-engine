@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL30;
 
 import objects.Model;
 import objects.Texture;
+import util.maths.BoundingSphere;
 import util.maths.Mat4f;
 import util.maths.Vec3f;
 
@@ -17,6 +18,7 @@ public class Entity{
 	protected FloatBuffer matBuff;
 	protected Mat4f mMat;
 	protected Vec3f position, orientation, scale;
+	protected BoundingSphere bounds;
 	protected float shineDamper, reflectivity;
 	protected int texId, vaoId, vertexCount, mMatUniLoc,
 		shineDamperUniLoc, reflectivityUniLoc;
@@ -36,6 +38,8 @@ public class Entity{
 		matBuff = BufferUtils.createFloatBuffer(16);
 		mMat = new Mat4f();
 		
+		bounds = new BoundingSphere(position, scale.z);
+		
 		transform();
 		
 		this.shineDamper = shineDamper;
@@ -49,6 +53,7 @@ public class Entity{
 		mMat.rotateY(orientation.y);
 		mMat.rotateZ(orientation.z);
 		mMat.scale(scale.x, scale.y, scale.z);
+		bounds.transform(position, scale.z);
 	}
 	
 	public void render() {
@@ -81,6 +86,10 @@ public class Entity{
 		mMatUniLoc = GL20.glGetUniformLocation(shaderProgramId, "model");
 		shineDamperUniLoc = GL20.glGetUniformLocation(shaderProgramId, "shineDamper");
 		reflectivityUniLoc = GL20.glGetUniformLocation(shaderProgramId, "reflectivity");
+	}
+	
+	public BoundingSphere getBounds() {
+		return bounds;
 	}
 	
 	public Vec3f getPosition() {

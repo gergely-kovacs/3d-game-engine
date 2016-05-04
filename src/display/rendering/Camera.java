@@ -8,13 +8,18 @@ import org.lwjgl.opengl.GL20;
 import display.DisplayManager;
 import util.maths.Mat4f;
 import util.maths.Vec3f;
+import world.World;
 
 public class Camera {
+	public final float HEIGHT = 0.2f;
+	public boolean isAirborne = true;
+	
 	private FloatBuffer matBuff;
 	private Mat4f pMat;
 	private Vec3f position;
 	private float yaw, pitch, roll;
 	private int pMatUniLoc;
+	private float verticalSpeed = 0.0f;
 	
 	public Camera(Vec3f position, float yaw, float pitch, float roll, float fov) {
 		this.position = position;
@@ -25,7 +30,30 @@ public class Camera {
 		matBuff = BufferUtils.createFloatBuffer(16);
 		pMat = new Mat4f();
         
-        pMat.loadPerspective(fov, (float) DisplayManager.WIDTH / (float) DisplayManager.HEIGHT, 0.1f, 1000.0f);
+        pMat.loadPerspective(fov, (float) DisplayManager.WIDTH / (float) DisplayManager.HEIGHT, 0.01f, 1000.0f);
+	}
+	
+	public void fall() {
+		if (isAirborne) {
+			if (position.y > World.terrain.getHeight(position.x, position.z) + HEIGHT) {
+				position.y += verticalSpeed * DisplayManager.getDelta() + DisplayManager.getDelta() * World.GRAVITY;
+				verticalSpeed -= DisplayManager.getDelta();
+			} else {
+				isAirborne = false;
+				verticalSpeed = 0.0f;
+			}
+		} else {
+			position.y = World.terrain.getHeight(position.x, position.z) + HEIGHT;
+		}
+	}
+	
+	public void jump() {
+		if (!isAirborne) {
+			verticalSpeed = 1.25f;
+			isAirborne = true;
+			position.y += verticalSpeed * DisplayManager.getDelta() + DisplayManager.getDelta() * World.GRAVITY;
+			verticalSpeed -= DisplayManager.getDelta();
+		}
 	}
 	
 	public void specifyUniforms() {

@@ -11,14 +11,14 @@ public class TimeManager {
 	private double dayTracker;
 	private boolean first;
 	private Interpolator posMorningToNoon, posNoonToAfternoon,
-	colNightToDawn, colDawnToNoon, colNoonToDusk, colDuskToNight;
+			colNightToDawn, colDawnToNoon, colNoonToDusk, colDuskToNight;
 	
 	public TimeManager(float dayLength) {
 		this.dayLength = dayLength;
 		MORNING_LENGTH = dayLength * 10 / 24;
-		DAWN_LENGTH = dayLength * 4.0f / 24;
+		DAWN_LENGTH = dayLength * 2.0f / 24;
 		AFTERNOON_LENGTH = dayLength * 10 / 24;
-		DUSK_LENGTH = dayLength * 3 / 24;
+		DUSK_LENGTH = dayLength * 2 / 24;
 		
 		first = true;
 		

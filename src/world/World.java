@@ -1,5 +1,8 @@
 package world;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.lwjgl.opengl.GL13;
 
 import display.rendering.Camera;
@@ -19,23 +22,28 @@ public class World {
 	public static TimeManager day;
 	public static Camera camera;
     public static ModelledLightSource sun;
-    public static MovableEntity nyuszi, nyuszi2;
+    public static List<MovableEntity> movableEntities;
     public static Skybox skybox;
     public static Terrain terrain;
 	
 	public static void init() {
-        camera = new Camera(new Vec3f(0.0f, 5.0f, 10.0f), 0.0f, 0.0f, 0.0f, 45.0f);
+        camera = new Camera(new Vec3f(0.0f, 1.0f, 10.0f), 0.0f, 0.0f, 0.0f, 30.0f);
         
         sun = new ModelledLightSource(new Model("res/models/sun.obj"),
         		new Texture("res/textures/sun.png", GL13.GL_TEXTURE0),
         		new Vec3f(0.0f, 0.0f, 0.0f), new Vec3f(0.0f, 0.0f, 0.0f));
         
-        day = new TimeManager(72.0f);
+        day = new TimeManager(120.0f);
     	
-    	nyuszi = new MovableEntity(new Model("res/models/bunny3.obj"),
-			new Texture("res/textures/bunny_diffuse.png", GL13.GL_TEXTURE0),
-			new Vec3f(0f, 0.0f, 0.0f), Vec3f.NULL_VECTOR, Vec3f.UNIT_VECTOR,
-			1.0f, 0.2f);
+        // TODO: add more ghosts
+        movableEntities = new ArrayList<>();
+        
+        MovableEntity ghost = new MovableEntity(new Model("res/models/ghost.obj"),
+			new Texture("res/textures/ghost_diffuse.png", GL13.GL_TEXTURE0),
+			new Vec3f(0f, 0.0f, 0.0f), Vec3f.NULL_VECTOR, new Vec3f(0.1f, 0.1f, 0.1f),
+			1.0f, 0.25f, 0.75f);
+    	
+    	movableEntities.add(ghost);
     	
     	String[] cubeMapTextureFiles = new String[6];
     	cubeMapTextureFiles[0] = "res/textures/skybox/right.png";

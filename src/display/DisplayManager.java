@@ -3,11 +3,9 @@ package display;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
@@ -15,14 +13,17 @@ import org.lwjgl.opengl.GLContext;
 import display.rendering.Renderer;
 import display.rendering.Shader;
 import display.rendering.ShaderProgram;
+import gamelogic.AI;
+import gamelogic.GameLogic;
 import input.CursorInput;
 import input.KeyboardInput;
+import objects.entities.MovableEntity;
 import util.ErrorHandler;
 import util.Util;
 import world.World;
  
 public class DisplayManager {
-	public static final int WIDTH = 1280, HEIGHT = 720;
+	public static final int WIDTH = 1600, HEIGHT = 900;
 	public static long window;
     private final String TITLE = "Szakdolgozat";
     
@@ -55,7 +56,7 @@ public class DisplayManager {
     	if ( glfwInit() != GL11.GL_TRUE )
         	throw new IllegalStateException("Unable to initialize GLFW!");
  
-        window = glfwCreateWindow(WIDTH, HEIGHT, TITLE, NULL, NULL);
+        window = glfwCreateWindow(WIDTH, HEIGHT, TITLE, glfwGetPrimaryMonitor(), NULL);
         if ( window == NULL )
         	throw new RuntimeException("Failed to create a window!");
         
@@ -64,11 +65,10 @@ public class DisplayManager {
         glfwSetCursorPosCallback(window, cursorCallback = new CursorInput());
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-        ByteBuffer vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        
+        /*ByteBuffer vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowPos(window,
             (GLFWvidmode.width(vidmode) - WIDTH) / 2,
-            (GLFWvidmode.height(vidmode) - HEIGHT) / 2 );
+            (GLFWvidmode.height(vidmode) - HEIGHT) / 2 );*/
         
         glfwMakeContextCurrent(window);
         GLContext.createFromCurrent();
@@ -129,15 +129,18 @@ public class DisplayManager {
 	}
  
 	private void loop() {
-        while ( glfwWindowShouldClose(window) == GL11.GL_FALSE ) {
+        while ( glfwWindowShouldClose(window) == GL11.GL_FALSE &&
+        		GameLogic.shouldGameCommence()) {
+        	
         	World.day.passTime();
+        	World.camera.fall();
+        	
+        	AI.update();
         	
         	entityRenderer.updateCamera();
         	skyboxRenderer.updateSkyboxCamera();
         	terrainRenderer.updateCamera();
         	lightRenderer.updateCamera();
-        	
-        	World.nyuszi.move();
         	
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
             
@@ -150,9 +153,11 @@ public class DisplayManager {
             World.sun.getUniforms(entityRenderer.getProgramId());
             World.sun.specifyUniforms();
             
-            World.nyuszi.getUniforms(entityRenderer.getProgramId());
-            World.nyuszi.specifyUniforms();
-            World.nyuszi.render();
+            for (MovableEntity entity : World.movableEntities) {
+            	entity.getUniforms(entityRenderer.getProgramId());
+            	entity.specifyUniforms();
+            	entity.render();
+            }
             
             GL20.glUseProgram(0);
             

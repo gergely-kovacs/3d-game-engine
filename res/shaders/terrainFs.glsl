@@ -17,6 +17,6 @@ void main() {
 	brightness = max(brightness, 0.0);
 	vec3 diffuse = brightness * lightColour;
 
-	vec2 textureCoord = pass_Texture * 10;
+	vec2 textureCoord = pass_Texture * 40;
 	out_Color = texture(texture_Diffuse, textureCoord) * vec4(diffuse, 1.0);
 }
