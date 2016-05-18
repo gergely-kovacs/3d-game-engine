@@ -18,10 +18,10 @@ public class MovableEntity extends Entity {
 		this.speed = speed;
 	}
 
-	public void move(Vec3f destination) {
+	public void follow(Vec3f target) {
 		if (!isAirborne) {
-			float xDirection = World.camera.getPosition().x - position.x;
-			float zDirection = World.camera.getPosition().z - position.z;
+			float xDirection = target.x - position.x;
+			float zDirection = target.z - position.z;
 			float length = (float) Math.sqrt(xDirection * xDirection + zDirection * zDirection);
 			xDirection /= length;
 			zDirection /= length;

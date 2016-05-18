@@ -1,6 +1,7 @@
 #version 330
 
 uniform sampler2D texture_Diffuse;
+
 uniform vec3 lightColour;
 
 in vec3 surfaceNormal;
@@ -13,10 +14,9 @@ void main() {
 	vec3 unitNormal = normalize(surfaceNormal);
 	vec3 unitToLight = normalize(toLight);
 	
-	float brightness = dot(unitNormal, unitToLight); // TODO: fix ambient light (if light colour is 0, then diffuse colour is 0, regardless of brightness)
+	float brightness = dot(unitNormal, unitToLight);
 	brightness = max(brightness, 0.0);
 	vec3 diffuse = brightness * lightColour;
-
-	vec2 textureCoord = pass_Texture * 40;
-	out_Color = texture(texture_Diffuse, textureCoord) * vec4(diffuse, 1.0);
+	
+	out_Color = texture(texture_Diffuse, pass_Texture) * vec4(diffuse, 1.0);
 }

@@ -3,9 +3,11 @@ package display;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
@@ -23,7 +25,7 @@ import util.Util;
 import world.World;
  
 public class DisplayManager {
-	public static final int WIDTH = 1600, HEIGHT = 900;
+	public static final int WIDTH = 1280, HEIGHT = 720;
 	public static long window;
     private final String TITLE = "Szakdolgozat";
     
@@ -56,7 +58,7 @@ public class DisplayManager {
     	if ( glfwInit() != GL11.GL_TRUE )
         	throw new IllegalStateException("Unable to initialize GLFW!");
  
-        window = glfwCreateWindow(WIDTH, HEIGHT, TITLE, glfwGetPrimaryMonitor(), NULL);
+        window = glfwCreateWindow(WIDTH, HEIGHT, TITLE, NULL, NULL);
         if ( window == NULL )
         	throw new RuntimeException("Failed to create a window!");
         
@@ -65,10 +67,10 @@ public class DisplayManager {
         glfwSetCursorPosCallback(window, cursorCallback = new CursorInput());
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-        /*ByteBuffer vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        ByteBuffer vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowPos(window,
             (GLFWvidmode.width(vidmode) - WIDTH) / 2,
-            (GLFWvidmode.height(vidmode) - HEIGHT) / 2 );*/
+            (GLFWvidmode.height(vidmode) - HEIGHT) / 2 );
         
         glfwMakeContextCurrent(window);
         GLContext.createFromCurrent();

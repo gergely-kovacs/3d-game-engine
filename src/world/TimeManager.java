@@ -7,20 +7,21 @@ import util.maths.Interpolator;
 
 public class TimeManager {
 	private final float DAWN_LENGTH, DUSK_LENGTH, MORNING_LENGTH, AFTERNOON_LENGTH,
-	dayLength;
+	DAY_LENGTH;
 	private double dayTracker;
-	private boolean first;
+	private boolean init;
 	private Interpolator posMorningToNoon, posNoonToAfternoon,
 			colNightToDawn, colDawnToNoon, colNoonToDusk, colDuskToNight;
 	
 	public TimeManager(float dayLength) {
-		this.dayLength = dayLength;
+		// dawn and dusk are not part of the day's length
+		DAY_LENGTH = dayLength;
 		MORNING_LENGTH = dayLength * 10 / 24;
-		DAWN_LENGTH = dayLength * 2.0f / 24;
+		DAWN_LENGTH = dayLength * 2.5f / 24;
 		AFTERNOON_LENGTH = dayLength * 10 / 24;
-		DUSK_LENGTH = dayLength * 2 / 24;
+		DUSK_LENGTH = dayLength * 1.5f / 24;
 		
-		first = true;
+		init = true;
 		
 		posMorningToNoon = new Interpolator();
 		posNoonToAfternoon = new Interpolator();
@@ -31,9 +32,9 @@ public class TimeManager {
 	}
 	
 	public void passTime() {
-		if (first == true) {
+		if (init == true) {
 			dayTracker = GLFW.glfwGetTime();
-			first = false;
+			init = false;
 		}
 		
 		if (isMorningTime()) {
@@ -55,7 +56,7 @@ public class TimeManager {
 				World.sun.setColour(
 					colNoonToDusk.lerp(ModelledLightSource.SUN_NOON_COLOR, ModelledLightSource.SUN_DUSK_COLOR, AFTERNOON_LENGTH - DUSK_LENGTH)); }
 		} else if (isOver()) {
-			first = true;
+			init = true;
 			resetLerps();
 		}
 		
@@ -103,14 +104,13 @@ public class TimeManager {
 	
 	public boolean isNightTime() {
 		if (getDayTime() > MORNING_LENGTH + AFTERNOON_LENGTH &&
-			getDayTime() <= dayLength &&
+			getDayTime() <= DAY_LENGTH &&
 			!isAfternoonTime()) return true;
 		return false;
 	}
 	
 	private boolean isOver() {
-		if (getDayTime() > dayLength) return true;
-		return false;
+		return (getDayTime() > DAY_LENGTH);
 	}
 	
 	public double getDayTime() {

@@ -3,6 +3,7 @@
 uniform sampler2D texture_Diffuse;
 
 uniform vec3 lightColour;
+uniform vec3 ambientLight;
 
 uniform float shineDamper;
 uniform float reflectivity;
@@ -19,8 +20,8 @@ void main() {
 	vec3 unitToLight = normalize(toLight);
 	vec3 unitToCamera = normalize(toCamera);
 	
-	float brightness = dot(unitNormal, unitToLight); // TODO: fix ambient light (if light colour is 0, then diffuse colour is 0, regardless of brightness)
-	brightness = max(brightness, 0.35);
+	float brightness = dot(unitNormal, unitToLight);
+	brightness = max(brightness, 0.1);
 	vec3 diffuse = brightness * lightColour;
 	
 	vec3 lightDirection = -unitToLight;
@@ -30,5 +31,5 @@ void main() {
 	float dampedSpecular = pow(specularFactor, shineDamper);
 	vec3 finalSpecular = dampedSpecular * reflectivity * lightColour;
 	
-	fragColour = vec4(diffuse, 1.0) * texture(texture_Diffuse, pass_Texture) + vec4(finalSpecular, 1.0);
+	fragColour = vec4(2.0 * ambientLight, 1.0) + vec4(diffuse, 1.0) * texture(texture_Diffuse, pass_Texture) + vec4(finalSpecular, 1.0);
 }

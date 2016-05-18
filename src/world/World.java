@@ -33,9 +33,8 @@ public class World {
         		new Texture("res/textures/sun.png", GL13.GL_TEXTURE0),
         		new Vec3f(0.0f, 0.0f, 0.0f), new Vec3f(0.0f, 0.0f, 0.0f));
         
-        day = new TimeManager(120.0f);
+        day = new TimeManager(48.0f);
     	
-        // TODO: add more ghosts
         movableEntities = new ArrayList<>();
         
         MovableEntity ghost = new MovableEntity(new Model("res/models/ghost.obj"),

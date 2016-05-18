@@ -15,9 +15,9 @@ import util.maths.Vec3f;
 
 public class ModelledLightSource extends LightSource{
 	public static final Vec3f
-			SUN_INITIAL_POSITION = new Vec3f(-490.0f, 0.0f, -15.0f),
-			SUN_NOON_POSITION = new Vec3f(0.0f, 490.0f, -15.0f),
-			SUN_FINAL_POSITION = new Vec3f(490.0f, 0.0f, -15.0f),
+			SUN_INITIAL_POSITION = new Vec3f(-490.0f, -50.0f, -50.0f),
+			SUN_NOON_POSITION = new Vec3f(0.0f, 490.0f, -50.0f),
+			SUN_FINAL_POSITION = new Vec3f(490.0f, -50.0f, -50.0f),
 			
 			SUN_INITIAL_COLOR = new Vec3f(0.15f, 0.1f, 0.05f),
 			SUN_DAWN_COLOR = new Vec3f(0.55f, 0.5f, 0.35f),

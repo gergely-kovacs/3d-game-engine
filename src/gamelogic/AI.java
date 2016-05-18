@@ -7,7 +7,7 @@ public class AI {
 
 	public static void update() {
 		for (MovableEntity entity : World.movableEntities) {
-			entity.move(World.camera.getPosition());
+			entity.follow(World.camera.getPosition());
 		}
 	}
 }

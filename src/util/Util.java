@@ -30,7 +30,7 @@ public class Util {
 		return delta;
 	}
 	
-	public static float cosInterp(float v1, float v2, float a) {
+	public static float trigInterp(float v1, float v2, float a) {
 		double angle = a * Math.PI;
 		float normalized = (float) (1.0f - Math.cos(angle)) * 0.5f;
 		return v1 * (1.0f - normalized) + v2 * normalized;
