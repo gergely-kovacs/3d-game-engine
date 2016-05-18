@@ -5,7 +5,7 @@ import org.lwjgl.opengl.GL20;
 import util.maths.Vec3f;
 
 public class LightSource {
-	private static final Vec3f AMBIENT_LIGHT = new Vec3f(0.15f, 0.15f, 0.15f);
+	private static final Vec3f AMBIENT_LIGHT = new Vec3f(0.10f, 0.10f, 0.10f);
 	
 	protected Vec3f position;
 	protected Vec3f colour;

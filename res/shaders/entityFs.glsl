@@ -20,9 +20,11 @@ void main() {
 	vec3 unitToLight = normalize(toLight);
 	vec3 unitToCamera = normalize(toCamera);
 	
+	vec3 finalAmbient = 2.0 * ambientLight;
+	
 	float brightness = dot(unitNormal, unitToLight);
 	brightness = max(brightness, 0.1);
-	vec3 diffuse = brightness * lightColour;
+	vec3 finalDiffuse = brightness * lightColour;
 	
 	vec3 lightDirection = -unitToLight;
 	vec3 reflectedLightDirection = reflect(lightDirection, unitNormal);
@@ -31,5 +33,7 @@ void main() {
 	float dampedSpecular = pow(specularFactor, shineDamper);
 	vec3 finalSpecular = dampedSpecular * reflectivity * lightColour;
 	
-	fragColour = vec4(2.0 * ambientLight, 1.0) + vec4(diffuse, 1.0) * texture(texture_Diffuse, pass_Texture) + vec4(finalSpecular, 1.0);
+	vec4 totalLight = vec4((finalAmbient + finalDiffuse + finalSpecular), 1.0);
+	
+	fragColour = texture(texture_Diffuse, pass_Texture) * totalLight;
 }
